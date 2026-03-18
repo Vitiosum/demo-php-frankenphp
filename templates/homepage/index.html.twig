@@ -1,216 +1,102 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}FrankenPHP Demo | Clever Cloud{% endblock %}
+{% block title %}FrankenPHP + Symfony on Clever Cloud{% endblock %}
 
 {% block body %}
-
-<style>
-.container{
-  max-width:1100px;
-  margin:auto;
-  padding:40px 20px;
-  font-family:Arial, sans-serif;
-}
-
-.hero{
-  background:#0f172a;
-  color:white;
-  padding:40px;
-  border-radius:12px;
-  margin-bottom:20px;
-  border:1px solid rgba(255,255,255,0.08);
-}
-
-.hero h1{
-  margin:0 0 10px 0;
-  font-size:40px;
-  color:#22c55e;
-}
-
-.hero p{
-  color:#cbd5e1;
-  font-size:18px;
-  line-height:1.6;
-}
-
-.banner{
-  background:#22c55e;
-  color:#0f172a;
-  font-weight:bold;
-  display:inline-block;
-  padding:8px 12px;
-  border-radius:6px;
-  margin-bottom:15px;
-}
-
-.logos{
-  display:flex;
-  align-items:center;
-  gap:14px;
-  margin-top:20px;
-  flex-wrap:wrap;
-}
-
-.logo-pill{
-  display:inline-flex;
-  align-items:center;
-  justify-content:center;
-  padding:12px 18px;
-  border-radius:999px;
-  font-weight:bold;
-  letter-spacing:0.2px;
-  min-height:48px;
-}
-
-.logo-clever{
-  background:#22c55e;
-  color:#0f172a;
-}
-
-.logo-franken{
-  background:#38bdf8;
-  color:#0f172a;
-}
-
-.logo-plus{
-  color:#cbd5e1;
-  font-size:24px;
-  font-weight:bold;
-}
-
-.buttons{
-  margin-top:25px;
-}
-
-.buttons a{
-  text-decoration:none;
-  font-weight:bold;
-  padding:12px 18px;
-  border-radius:8px;
-  margin-right:10px;
-  display:inline-block;
-}
-
-.btn-primary{
-  background:#22c55e;
-  color:#0f172a;
-}
-
-.btn-secondary{
-  background:#38bdf8;
-  color:#0f172a;
-}
-
-.grid{
-  display:grid;
-  grid-template-columns:1fr 1fr 1fr;
-  gap:15px;
-}
-
-.card{
-  background:#1e293b;
-  color:white;
-  padding:20px;
-  border-radius:10px;
-  border:1px solid rgba(255,255,255,0.08);
-}
-
-.card h2{
-  margin-top:0;
-}
-
-.card p{
-  color:#cbd5e1;
-  line-height:1.6;
-}
-
-.footer{
-  margin-top:25px;
-  color:#94a3b8;
-}
-
-.footer a{
-  color:#38bdf8;
-}
-
-@media (max-width:900px){
-  .grid{
-    grid-template-columns:1fr;
-  }
-
-  .hero h1{
-    font-size:32px;
-  }
-}
-</style>
-
 <div class="container">
 
   <div class="hero">
-
-    <div class="banner">
-      🎥 YouTube Demo — Running on Clever Cloud
-    </div>
-
-    <h1>FrankenPHP on Clever Cloud</h1>
-
-    <p>
-      This demo shows a modern PHP application using
-      <strong>FrankenPHP</strong>, <strong>Symfony</strong> and
-      <strong>API Platform</strong>, deployed on <strong>Clever Cloud</strong>.
+    <span class="eyebrow">
+      <span class="live-dot"></span>
+      Live on Clever Cloud
+    </span>
+    <h1><span class="accent">FrankenPHP</span> + Symfony</h1>
+    <p class="lead">
+      A modern PHP application using <strong>FrankenPHP</strong>, <strong>Symfony</strong>
+      and <strong>API Platform</strong> — deployed and running on <strong>Clever Cloud</strong>.
     </p>
-
     <div class="logos">
       <div class="logo-pill logo-clever">☁️ Clever Cloud</div>
-      <div class="logo-plus">+</div>
+      <div class="logo-sep">+</div>
       <div class="logo-pill logo-franken">⚡ FrankenPHP</div>
+      <div class="logo-sep">+</div>
+      <div class="logo-pill logo-symfony">🎶 Symfony</div>
     </div>
-
-    <div class="buttons">
-      <a class="btn-primary" href="/api" target="_blank" rel="noopener noreferrer">
+    <div class="actions">
+      <a class="button button-primary" href="/api" target="_blank" rel="noopener noreferrer">
+        <svg width="14" height="14" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6M15 3h6v6M10 14L21 3"/></svg>
         Open Swagger UI
       </a>
-
-      <a class="btn-secondary" href="/api/monsters.jsonld" target="_blank" rel="noopener noreferrer">
-        Open Monsters API
+      <a class="button button-secondary" href="/api/monsters.jsonld" target="_blank" rel="noopener noreferrer">
+        <svg width="14" height="14" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>
+        Monsters API
       </a>
     </div>
-
   </div>
 
   <div class="grid">
-
-    <div class="card">
-      <h2>Runtime</h2>
+    <div class="card col-4">
+      <div class="card-icon">⚡</div>
+      <h2>FrankenPHP Runtime</h2>
       <p>
-        FrankenPHP provides a modern PHP runtime optimized for
-        performance and developer experience.
+        Modern PHP runtime built on Caddy — supports early hints,
+        real-time capabilities, and worker mode for maximum performance.
       </p>
     </div>
-
-    <div class="card">
-      <h2>Framework</h2>
+    <div class="card col-4">
+      <div class="card-icon">🎶</div>
+      <h2>Symfony Framework</h2>
       <p>
-        Symfony structures the application while API Platform
-        automatically exposes documented API endpoints.
+        Production-grade PHP framework with dependency injection,
+        routing, and a rich ecosystem of reusable components.
       </p>
     </div>
-
-    <div class="card">
-      <h2>Platform</h2>
+    <div class="card col-4">
+      <div class="card-icon">☁️</div>
+      <h2>Clever Cloud</h2>
       <p>
-        Clever Cloud manages deployment, hosting and execution
-        so developers can focus on their applications.
+        European PaaS that manages deployment, scaling and execution
+        so developers can focus on building their applications.
       </p>
     </div>
-
   </div>
 
-  <div class="footer">
-    Powered by FrankenPHP, Symfony and API Platform — deployed on
-    <a href="https://www.clever.cloud" target="_blank" rel="noopener noreferrer">Clever Cloud</a>.
+  <div class="footer-card">
+    <p>Powered by FrankenPHP, Symfony and API Platform — deployed on <a href="https://www.clever-cloud.com" target="_blank" rel="noopener noreferrer">Clever Cloud</a>.</p>
   </div>
 
 </div>
 
+<style>
+  .live-dot {
+    display: inline-block;
+    width: 7px; height: 7px;
+    background: var(--green);
+    border-radius: 50%;
+    margin-right: 4px;
+    vertical-align: middle;
+    animation: dot-pulse 2s ease infinite;
+  }
+  @keyframes dot-pulse { 0%,100% { opacity:1; } 50% { opacity:0.3; } }
+  .logos {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-top: 22px;
+    flex-wrap: wrap;
+  }
+  .logo-pill {
+    display: inline-flex;
+    align-items: center;
+    padding: 8px 16px;
+    border-radius: 999px;
+    font-size: 14px;
+    font-weight: 600;
+  }
+  .logo-clever  { background: rgba(34,197,94,0.15); color: #86efac; border: 1px solid rgba(34,197,94,0.25); }
+  .logo-franken { background: rgba(56,189,248,0.15); color: #7dd3fc; border: 1px solid rgba(56,189,248,0.25); }
+  .logo-symfony { background: rgba(167,139,250,0.15); color: #c4b5fd; border: 1px solid rgba(167,139,250,0.25); }
+  .logo-sep { color: #475569; font-size: 18px; font-weight: 300; }
+  .card-icon { font-size: 28px; margin-bottom: 10px; }
+</style>
 {% endblock %}
