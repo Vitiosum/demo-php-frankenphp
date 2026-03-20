@@ -12,5 +12,7 @@
 
 	root * public/
 
-	php_server
+	php_server {
+		try_files {path} /index.php
+	}
 }
