@@ -5,43 +5,38 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>{% block title %}FrankenPHP on Clever Cloud{% endblock %}</title>
 
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
+
     <style>
       :root {
-        --bg: #081226;
-        --panel: #162338;
-        --panel-soft: #1d2d46;
-        --text: #f8fafc;
-        --muted: #cbd5e1;
+        --bg: #07080C;
+        --surface: #0C0E13;
+        --border: #1A1D26;
+        --text: #E6E8F0;
+        --muted: #4E5468;
+        --accent: #FF5A1F;
         --green: #22c55e;
-        --blue: #38bdf8;
-        --border: rgba(255, 255, 255, 0.08);
-        --shadow: 0 18px 50px rgba(0, 0, 0, 0.35);
       }
 
-      * {
-        box-sizing: border-box;
-      }
+      * { box-sizing: border-box; }
 
       html, body {
         margin: 0;
         padding: 0;
         min-height: 100%;
-        font-family: Arial, sans-serif;
-        background:
-          radial-gradient(circle at top left, rgba(56, 189, 248, 0.18), transparent 28%),
-          radial-gradient(circle at top right, rgba(34, 197, 94, 0.14), transparent 24%),
-          linear-gradient(180deg, #081226 0%, #0b1730 100%);
+        font-family: 'Outfit', sans-serif;
+        background: var(--bg);
         color: var(--text);
       }
 
       a {
-        color: var(--blue);
+        color: var(--accent);
         text-decoration: none;
       }
 
-      a:hover {
-        text-decoration: underline;
-      }
+      a:hover { text-decoration: underline; }
 
       .container {
         max-width: 1120px;
@@ -52,11 +47,9 @@
       .hero,
       .card,
       .footer-card {
-        background: rgba(22, 35, 56, 0.88);
-        backdrop-filter: blur(4px);
+        background: var(--surface);
         border: 1px solid var(--border);
         border-radius: 18px;
-        box-shadow: var(--shadow);
       }
 
       .hero {
@@ -69,22 +62,21 @@
         margin-bottom: 14px;
         padding: 8px 12px;
         border-radius: 999px;
-        background: rgba(34, 197, 94, 0.12);
-        color: #bbf7d0;
+        background: rgba(255, 90, 31, 0.1);
+        color: var(--accent);
+        border: 1px solid rgba(255, 90, 31, 0.22);
         font-size: 14px;
-        font-weight: bold;
+        font-weight: 600;
       }
 
       h1 {
         margin: 0 0 16px;
         font-size: 46px;
         line-height: 1.05;
-        color: #ffffff;
+        color: var(--text);
       }
 
-      .accent {
-        color: var(--green);
-      }
+      .accent { color: var(--accent); }
 
       .lead {
         margin: 0;
@@ -102,22 +94,41 @@
       }
 
       .button {
-        display: inline-block;
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
         padding: 12px 18px;
         border-radius: 10px;
-        font-weight: bold;
+        font-weight: 600;
         border: 1px solid transparent;
+        text-decoration: none;
+        transition: all 0.15s;
+        font-family: 'Outfit', sans-serif;
       }
 
       .button-primary {
-        background: var(--green);
-        color: #081226;
+        background: var(--accent);
+        color: var(--bg);
+      }
+
+      .button-primary:hover {
+        background: #E8491A;
+        text-decoration: none;
+        transform: translateY(-1px);
+        box-shadow: 0 4px 16px rgba(255, 90, 31, 0.22);
+        color: var(--bg);
       }
 
       .button-secondary {
-        background: rgba(56, 189, 248, 0.12);
-        color: #e0f2fe;
-        border-color: rgba(56, 189, 248, 0.3);
+        background: rgba(255, 90, 31, 0.08);
+        color: var(--accent);
+        border-color: rgba(255, 90, 31, 0.22);
+      }
+
+      .button-secondary:hover {
+        background: rgba(255, 90, 31, 0.15);
+        text-decoration: none;
+        color: var(--accent);
       }
 
       .grid {
@@ -127,30 +138,18 @@
         margin-bottom: 24px;
       }
 
-      .card {
-        padding: 24px;
-      }
+      .card { padding: 24px; }
 
-      .col-4 {
-        grid-column: span 4;
-      }
-
-      .col-6 {
-        grid-column: span 6;
-      }
-
-      .col-8 {
-        grid-column: span 8;
-      }
-
-      .col-12 {
-        grid-column: span 12;
-      }
+      .col-4  { grid-column: span 4; }
+      .col-6  { grid-column: span 6; }
+      .col-8  { grid-column: span 8; }
+      .col-12 { grid-column: span 12; }
 
       .card h2 {
         margin-top: 0;
         margin-bottom: 10px;
         font-size: 22px;
+        color: var(--text);
       }
 
       .card p,
@@ -163,8 +162,9 @@
         display: block;
         margin-top: 8px;
         font-size: 28px;
-        font-weight: bold;
-        color: #ffffff;
+        font-weight: 600;
+        color: var(--text);
+        font-family: 'DM Mono', monospace;
       }
 
       .metric-sub {
@@ -191,33 +191,22 @@
         height: auto;
       }
 
-      .footer-card {
-        padding: 20px 24px;
-      }
-
-      .footer-card p {
-        margin: 0;
-        color: var(--muted);
-      }
+      .footer-card { padding: 20px 24px; }
+      .footer-card p { margin: 0; color: var(--muted); }
 
       code {
         padding: 2px 6px;
         border-radius: 6px;
-        background: rgba(2, 6, 23, 0.7);
-        color: #e2e8f0;
+        background: rgba(255, 255, 255, 0.04);
+        border: 1px solid var(--border);
+        color: var(--accent);
+        font-family: 'DM Mono', monospace;
+        font-size: 0.9em;
       }
 
       @media (max-width: 900px) {
-        h1 {
-          font-size: 34px;
-        }
-
-        .col-4,
-        .col-6,
-        .col-8,
-        .col-12 {
-          grid-column: span 12;
-        }
+        h1 { font-size: 34px; }
+        .col-4, .col-6, .col-8, .col-12 { grid-column: span 12; }
       }
     </style>
 

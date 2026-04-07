@@ -110,65 +110,56 @@
   .live-dot {
     display: inline-block;
     width: 7px; height: 7px;
-    background: var(--green);
+    background: #FF5A1F;
     border-radius: 50%;
     margin-right: 4px;
     vertical-align: middle;
     animation: dot-pulse 2s ease infinite;
   }
   @keyframes dot-pulse { 0%,100% { opacity:1; } 50% { opacity:0.3; } }
-  .logos {
-    display: flex;
-    align-items: center;
-    gap: 10px;
-    margin-top: 22px;
-    flex-wrap: wrap;
-  }
+  .logos { display: flex; align-items: center; gap: 10px; margin-top: 22px; flex-wrap: wrap; }
   .logo-pill {
-    display: inline-flex;
-    align-items: center;
-    padding: 8px 16px;
-    border-radius: 999px;
-    font-size: 14px;
-    font-weight: 600;
+    display: inline-flex; align-items: center;
+    padding: 8px 16px; border-radius: 999px;
+    font-size: 14px; font-weight: 600;
   }
-  .logo-clever  { background: rgba(34,197,94,0.15); color: #86efac; border: 1px solid rgba(34,197,94,0.25); }
-  .logo-franken { background: rgba(56,189,248,0.15); color: #7dd3fc; border: 1px solid rgba(56,189,248,0.25); }
-  .logo-symfony { background: rgba(167,139,250,0.15); color: #c4b5fd; border: 1px solid rgba(167,139,250,0.25); }
-  .logo-sep { color: #475569; font-size: 18px; font-weight: 300; }
+  .logo-clever  { background: rgba(74,222,128,0.1);  color: #4ADE80; border: 1px solid rgba(74,222,128,0.2); }
+  .logo-franken { background: rgba(255,90,31,0.1);   color: #FF5A1F; border: 1px solid rgba(255,90,31,0.22); }
+  .logo-symfony { background: rgba(167,139,250,0.1); color: #c4b5fd; border: 1px solid rgba(167,139,250,0.2); }
+  .logo-sep { color: #4E5468; font-size: 18px; font-weight: 300; }
   .card-icon { font-size: 28px; margin-bottom: 10px; }
   .cert-banner {
     display: flex; align-items: center; gap: 16px;
-    background: rgba(251,191,36,0.07); border: 1px solid rgba(251,191,36,0.25);
-    border-radius: 16px; padding: 20px 24px; margin-bottom: 24px;
+    background: rgba(251,191,36,0.055); border: 1px solid rgba(251,191,36,0.18);
+    border-radius: 14px; padding: 18px 22px; margin-bottom: 24px;
   }
-  .cert-icon { font-size: 28px; flex-shrink: 0; }
+  .cert-icon { font-size: 26px; flex-shrink: 0; }
   .cert-content { flex: 1; }
-  .cert-title { font-size: 15px; font-weight: 600; color: #fbbf24; margin-bottom: 4px; }
-  .cert-sub { font-size: 13px; color: #78716c; line-height: 1.5; }
+  .cert-title { font-size: 14px; font-weight: 600; color: #F5C030; margin-bottom: 3px; }
+  .cert-sub { font-size: 12.5px; color: #5C5035; line-height: 1.5; }
   .cert-btn {
     display: inline-flex; align-items: center; gap: 6px;
-    background: #fbbf24; border-radius: 10px; color: #1c1917;
-    font-size: 13px; font-weight: 700; padding: 10px 18px;
-    text-decoration: none; transition: all 0.2s; white-space: nowrap; flex-shrink: 0;
+    background: #F5C030; border-radius: 8px; color: #1A1005;
+    font-size: 12px; font-weight: 700; padding: 9px 16px;
+    text-decoration: none; transition: all 0.15s; white-space: nowrap; flex-shrink: 0;
   }
-  .cert-btn:hover { background: #f59e0b; transform: translateY(-1px); box-shadow: 0 4px 16px rgba(251,191,36,0.3); text-decoration: none; }
+  .cert-btn:hover { background: #E8B428; transform: translateY(-1px); text-decoration: none; }
   @media (max-width: 540px) { .cert-banner { flex-direction: column; text-align: center; } }
-  .footer { margin-top: 32px; border-top: 1px solid rgba(255,255,255,0.07); padding-top: 22px; }
-  .footer-links { display: flex; flex-wrap: wrap; gap: 8px; justify-content: center; margin-bottom: 12px; }
+  .footer { margin-top: 32px; border-top: 1px solid #1A1D26; padding-top: 22px; }
+  .footer-links { display: flex; flex-wrap: wrap; gap: 6px; justify-content: center; margin-bottom: 12px; }
   .footer-link {
-    display: inline-flex; align-items: center; gap: 6px;
-    background: rgba(255,255,255,0.04); border: 1px solid rgba(255,255,255,0.07);
-    border-radius: 8px; color: #64748b; font-size: 12px; padding: 6px 12px;
-    text-decoration: none; transition: all 0.2s;
+    display: inline-flex; align-items: center; gap: 5px;
+    background: rgba(255,255,255,0.02); border: 1px solid #1A1D26;
+    border-radius: 6px; color: #4E5468; font-size: 11px; padding: 5px 10px;
+    text-decoration: none; transition: all 0.15s;
   }
-  .footer-link:hover { background: rgba(255,255,255,0.08); color: #94a3b8; text-decoration: none; }
-  .footer-link.cc { color: #86efac; border-color: rgba(34,197,94,0.2); background: rgba(34,197,94,0.06); }
-  .footer-link.cc:hover { background: rgba(34,197,94,0.12); }
-  .footer-link.li { color: #93c5fd; border-color: rgba(96,165,250,0.2); background: rgba(96,165,250,0.06); }
-  .footer-link.li:hover { background: rgba(96,165,250,0.12); }
-  .footer-link.cert { color: #fbbf24; border-color: rgba(251,191,36,0.25); background: rgba(251,191,36,0.07); }
-  .footer-link.cert:hover { background: rgba(251,191,36,0.14); }
-  .footer-copy { text-align: center; color: #334155; font-size: 11px; }
+  .footer-link:hover { background: rgba(255,255,255,0.04); color: #E6E8F0; text-decoration: none; }
+  .footer-link.cc   { color: #4ADE80; border-color: rgba(74,222,128,0.15); background: rgba(74,222,128,0.05); }
+  .footer-link.cc:hover { background: rgba(74,222,128,0.1); }
+  .footer-link.li   { color: #60A5FA; border-color: rgba(96,165,250,0.15); background: rgba(96,165,250,0.05); }
+  .footer-link.li:hover { background: rgba(96,165,250,0.1); }
+  .footer-link.cert { color: #F5C030; border-color: rgba(245,192,48,0.18); background: rgba(245,192,48,0.05); }
+  .footer-link.cert:hover { background: rgba(245,192,48,0.1); }
+  .footer-copy { text-align: center; color: #252830; font-size: 11px; }
 </style>
 {% endblock %}
