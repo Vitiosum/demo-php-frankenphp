@@ -1,0 +1,12 @@
+{
+  "apps": [
+    {
+      "app_id": "app_b68ff566-691c-4e7c-8dee-05483dacf35e",
+      "org_id": "orga_0101c5b3-9b9f-466b-8c03-803f916d601b",
+      "deploy_url": "https://github.com/Vitiosum/demo-php-frankenphp.git",
+      "git_ssh_url": "https://github.com/Vitiosum/demo-php-frankenphp.git",
+      "name": "demo-php-frankenphp",
+      "alias": "demo-php-frankenphp"
+    }
+  ]
+}
