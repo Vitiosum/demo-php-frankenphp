@@ -7,421 +7,223 @@
 <style>
   /* ── NAV ── */
   .nav {
-    position: sticky;
-    top: 0;
-    z-index: 50;
-    background: #ffffff;
+    position: sticky; top: 0; z-index: 50;
+    background: rgba(255,255,255,0.95);
+    backdrop-filter: blur(8px);
     border-bottom: 1px solid #f0f0f0;
   }
   .nav-inner {
-    max-width: 1280px;
-    margin: 0 auto;
+    max-width: 1280px; margin: 0 auto;
     padding: 16px 24px;
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
+    display: flex; align-items: center; justify-content: space-between;
   }
-  .nav-left {
-    display: flex;
-    align-items: center;
-    gap: 8px;
-  }
-  .nav-brand {
-    font-size: 18px;
-    font-weight: 600;
-    color: #111827;
-  }
-  .nav-center {
-    display: none;
-    align-items: center;
-    gap: 32px;
-  }
-  @media (min-width: 768px) {
-    .nav-center { display: flex; }
-  }
+  .nav-left { display: flex; align-items: center; gap: 8px; }
+  .nav-brand { font-size: 18px; font-weight: 600; color: #111827; }
+  .nav-center { display: none; align-items: center; gap: 32px; }
+  @media (min-width: 768px) { .nav-center { display: flex; } }
   .nav-center a {
-    display: flex;
-    align-items: center;
-    gap: 4px;
-    font-size: 14px;
-    color: #374151;
-    transition: color 0.15s;
+    display: flex; align-items: center; gap: 4px;
+    font-size: 14px; color: #374151; transition: color 0.15s;
   }
   .nav-center a:hover { color: #111827; }
-  .nav-right {
-    display: flex;
-    align-items: center;
-    gap: 16px;
+
+  /* ── DROPDOWNS ── */
+  .nav-dropdown { position: relative; }
+  .nav-dropdown > a { cursor: pointer; }
+  .dropdown-menu {
+    display: none; position: absolute; top: calc(100% + 12px); left: 50%;
+    transform: translateX(-50%);
+    background: #fff; border: 1px solid #e5e7eb; border-radius: 12px;
+    box-shadow: 0 8px 32px rgba(0,0,0,0.10); padding: 8px;
+    min-width: 220px; z-index: 200;
   }
-  .nav-link {
-    font-size: 14px;
-    color: #374151;
+  .dropdown-menu.wide { min-width: 480px; }
+  .dropdown-menu.wide .dropdown-cols { display: grid; grid-template-columns: 1fr 1fr; gap: 0; }
+  .nav-dropdown:hover .dropdown-menu,
+  .nav-dropdown:focus-within .dropdown-menu { display: block; }
+  .dropdown-section-label {
+    font-size: 10px; font-weight: 600; color: #9ca3af;
+    letter-spacing: 0.08em; text-transform: uppercase;
+    padding: 8px 10px 4px;
   }
+  .dropdown-item {
+    display: flex; align-items: center; gap: 10px;
+    padding: 8px 10px; border-radius: 8px;
+    color: #374151; font-size: 13px; font-weight: 500;
+    cursor: pointer; transition: background 0.12s;
+    text-decoration: none;
+  }
+  .dropdown-item:hover { background: #f9fafb; color: #111827; }
+  .dropdown-item-icon {
+    width: 28px; height: 28px; border-radius: 6px;
+    background: #f3f4f6; display: flex; align-items: center; justify-content: center;
+    flex-shrink: 0; overflow: hidden;
+  }
+  .dropdown-item-icon img {
+    width: 16px; height: 16px; object-fit: contain;
+    filter: grayscale(0.2) opacity(0.85); transition: filter 0.15s;
+  }
+  .dropdown-item:hover .dropdown-item-icon img { filter: grayscale(0) opacity(1); }
+  .dropdown-item-text { display: flex; flex-direction: column; }
+  .dropdown-item-name { font-size: 13px; font-weight: 500; color: #111827; line-height: 1.3; }
+  .dropdown-item-desc { font-size: 11px; color: #9ca3af; font-weight: 400; }
+
+  .nav-right { display: flex; align-items: center; gap: 16px; }
+  .nav-link { font-size: 14px; color: #374151; transition: color 0.15s; }
   .nav-link:hover { color: #111827; }
   .btn-primary {
-    display: inline-flex;
-    align-items: center;
-    background: #111827;
-    color: #ffffff !important;
-    padding: 10px 20px;
-    border-radius: 9999px;
-    font-size: 14px;
-    font-weight: 500;
-    transition: background 0.15s;
-    white-space: nowrap;
+    display: inline-flex; align-items: center;
+    background: #111827; color: #ffffff !important;
+    padding: 10px 20px; border-radius: 9999px;
+    font-size: 14px; font-weight: 500;
+    transition: background 0.15s; white-space: nowrap;
   }
   .btn-primary:hover { background: #374151; }
 
   /* ── HERO ── */
-  .hero-section {
-    padding: 96px 0 128px;
-    text-align: center;
-  }
+  .hero-section { padding: 96px 0 80px; text-align: center; }
+  .hero-inner { max-width: 1280px; margin: 0 auto; padding: 0 24px; }
   .hero-badge {
-    display: inline-flex;
-    align-items: center;
-    gap: 8px;
-    margin-bottom: 32px;
-    font-size: 14px;
-    font-weight: 500;
-    color: #111827;
+    display: inline-flex; align-items: center; gap: 8px;
+    margin-bottom: 32px; font-size: 14px; font-weight: 500; color: #111827;
   }
   .badge-icon {
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-    width: 24px;
-    height: 24px;
-    border: 1px solid #d1d5db;
-    border-radius: 6px;
+    display: inline-flex; align-items: center; justify-content: center;
+    width: 24px; height: 24px; border: 1px solid #d1d5db; border-radius: 6px;
   }
   .hero-heading {
     font-size: clamp(48px, 6vw, 80px);
-    font-weight: 400;
-    line-height: 1.1;
-    letter-spacing: -0.02em;
-    margin-bottom: 20px;
-    color: #111827;
+    font-weight: 400; line-height: 1.1;
+    letter-spacing: -0.02em; margin-bottom: 20px; color: #111827;
   }
   .gradient-text {
     background: linear-gradient(to right, #111827, #9ca3af, #d1d5db);
-    -webkit-background-clip: text;
-    -webkit-text-fill-color: transparent;
+    -webkit-background-clip: text; -webkit-text-fill-color: transparent;
     background-clip: text;
   }
   .hero-sub {
-    font-size: 18px;
-    color: #6b7280;
-    max-width: 672px;
-    margin: 0 auto 32px;
-    line-height: 1.6;
+    font-size: 18px; color: #6b7280;
+    max-width: 672px; margin: 0 auto 32px; line-height: 1.6;
   }
   .hero-ctas {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    gap: 24px;
-    flex-wrap: wrap;
+    display: flex; align-items: center; justify-content: center;
+    gap: 24px; flex-wrap: wrap;
   }
   .hero-link {
-    font-size: 15px;
-    color: #111827;
-    text-decoration: underline;
-    text-underline-offset: 3px;
+    font-size: 15px; color: #111827;
+    text-decoration: underline; text-underline-offset: 3px;
   }
   .hero-link:hover { color: #374151; }
 
   /* ── TABS BAR ── */
-  .tabs-wrapper {
-    padding: 0 24px;
-    max-width: 1280px;
-    margin: 0 auto 16px;
-    display: flex;
-    justify-content: center;
-  }
+  .tabs-wrapper { padding: 0 24px; max-width: 1280px; margin: 0 auto 16px; text-align: center; }
   .tabs-bar {
-    display: inline-flex;
-    background: #f3f4f6;
-    border-radius: 8px;
-    padding: 4px;
+    display: inline-flex; background: #f3f4f6;
+    border-radius: 8px; padding: 4px;
   }
   .tab-btn {
-    display: flex;
-    align-items: center;
-    gap: 6px;
-    padding: 8px 20px;
-    border-radius: 6px;
-    border: none;
-    background: transparent;
-    color: #6b7280;
-    font-size: 14px;
-    font-family: 'Inter', sans-serif;
-    font-weight: 500;
-    cursor: pointer;
-    transition: all 0.15s;
-    white-space: nowrap;
+    display: flex; align-items: center; gap: 6px;
+    padding: 8px 20px; border-radius: 6px; border: none;
+    background: transparent; color: #6b7280;
+    font-size: 14px; font-family: 'Inter', sans-serif; font-weight: 500;
+    cursor: pointer; transition: all 0.15s; white-space: nowrap;
   }
-  .tab-btn.active {
-    background: #ffffff;
-    color: #111827;
-    box-shadow: 0 1px 3px rgba(0,0,0,0.1);
-  }
-  .tab-sep {
-    width: 1px;
-    height: 20px;
-    background: #d1d5db;
-    align-self: center;
-    display: none;
-  }
-  @media (min-width: 768px) {
-    .tab-sep { display: block; }
-  }
+  .tab-btn.active { background: #ffffff; color: #111827; box-shadow: 0 1px 3px rgba(0,0,0,0.1); }
+  .tab-btn:hover:not(.active) { color: #374151; }
+  .tab-sep { width: 1px; height: 20px; background: #d1d5db; align-self: center; }
   @media (max-width: 767px) {
     .tabs-bar { display: grid; grid-template-columns: 1fr 1fr; gap: 4px; width: 100%; }
-    .tabs-wrapper { display: block; }
     .tab-sep { display: none; }
   }
 
   /* ── VIDEO CONTAINER ── */
-  .video-section {
-    padding: 0 24px;
-    max-width: 1280px;
-    margin: 0 auto;
-  }
-  .video-container {
-    position: relative;
-    border-radius: 24px;
-    overflow: hidden;
-    height: 500px;
-  }
-  @media (max-width: 767px) {
-    .video-container { height: 400px; }
-  }
-  .video-container video {
-    width: 100%;
-    height: 100%;
-    object-fit: cover;
-    display: block;
-  }
+  .video-section { padding: 0 24px; max-width: 1280px; margin: 0 auto; }
+  .video-container { position: relative; border-radius: 24px; overflow: hidden; height: 500px; }
+  @media (max-width: 767px) { .video-container { height: 380px; } }
+  .video-container video { width: 100%; height: 100%; object-fit: cover; display: block; }
 
   /* ── OVERLAYS ── */
   .overlay {
-    position: absolute;
-    inset: 0;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    background: rgba(0,0,0,0.35);
+    position: absolute; inset: 0;
+    display: flex; align-items: center; justify-content: center;
+    background: rgba(0,0,0,0.38);
   }
   .overlay-card {
-    background: #ffffff;
-    border-radius: 12px;
-    padding: 24px;
-    width: 320px;
+    background: #ffffff; border-radius: 12px; padding: 24px; width: 320px;
     box-shadow: 0 20px 60px rgba(0,0,0,0.3);
   }
-  .overlay-title {
-    font-size: 15px;
-    font-weight: 600;
-    color: #111827;
-    margin-bottom: 16px;
-  }
+  .overlay-title { font-size: 15px; font-weight: 600; color: #111827; margin-bottom: 16px; }
   .overlay-progress-track {
-    height: 6px;
-    background: #f3f4f6;
-    border-radius: 9999px;
-    overflow: hidden;
-    margin-bottom: 16px;
+    height: 6px; background: #f3f4f6; border-radius: 9999px; overflow: hidden; margin-bottom: 16px;
   }
-  .overlay-progress-fill {
-    height: 100%;
-    border-radius: 9999px;
-  }
-  .overlay-steps {
-    display: flex;
-    flex-direction: column;
-    gap: 10px;
-  }
-  .overlay-step {
-    display: flex;
-    align-items: center;
-    gap: 10px;
-    font-size: 13px;
-    color: #6b7280;
-  }
+  .overlay-progress-fill { height: 100%; border-radius: 9999px; }
+  .overlay-steps { display: flex; flex-direction: column; gap: 10px; }
+  .overlay-step { display: flex; align-items: center; gap: 10px; font-size: 13px; color: #6b7280; }
   .step-icon {
-    width: 20px;
-    height: 20px;
-    border-radius: 50%;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    flex-shrink: 0;
-    font-size: 11px;
+    width: 20px; height: 20px; border-radius: 50%;
+    display: flex; align-items: center; justify-content: center;
+    flex-shrink: 0; font-size: 11px;
   }
-  .step-done  { background: #d1fae5; color: #059669; }
-  .step-spin  { background: #ede9fe; color: #7c3aed; }
-  .step-wait  { background: #f3f4f6; color: #9ca3af; }
+  .step-done { background: #d1fae5; color: #059669; }
+  .step-spin-el {
+    width: 20px; height: 20px; border-radius: 50%; flex-shrink: 0;
+    border: 2px solid #ede9fe; border-top-color: #7c3aed;
+    animation: spin 0.8s linear infinite;
+  }
+  .step-wait {
+    background: #f3f4f6; color: #9ca3af; width: 20px; height: 20px;
+    border-radius: 50%; display: flex; align-items: center; justify-content: center;
+    flex-shrink: 0; font-size: 11px;
+  }
   .method-badge {
-    display: inline-flex;
-    font-size: 10px;
-    font-weight: 700;
-    padding: 2px 6px;
-    border-radius: 4px;
-    font-family: monospace;
-    margin-right: 4px;
+    display: inline-flex; font-size: 10px; font-weight: 700;
+    padding: 2px 6px; border-radius: 4px; font-family: monospace; margin-right: 4px;
   }
   .m-get    { background: #d1fae5; color: #059669; }
   .m-post   { background: #dbeafe; color: #1d4ed8; }
   .m-delete { background: #fee2e2; color: #dc2626; }
   .metric-row {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    padding: 6px 0;
-    border-bottom: 1px solid #f3f4f6;
-    font-size: 13px;
+    display: flex; justify-content: space-between; align-items: center;
+    padding: 8px 0; border-bottom: 1px solid #f3f4f6; font-size: 13px;
   }
   .metric-row:last-child { border-bottom: none; }
-  .metric-val {
-    font-weight: 600;
-    color: #111827;
-    font-variant-numeric: tabular-nums;
-  }
+  .metric-val { font-weight: 600; color: #111827; font-variant-numeric: tabular-nums; }
   .badge-success {
-    display: inline-flex;
-    align-items: center;
-    gap: 4px;
-    background: #d1fae5;
-    color: #059669;
-    font-size: 11px;
-    font-weight: 600;
-    padding: 3px 8px;
-    border-radius: 9999px;
+    display: inline-flex; align-items: center; gap: 4px;
+    background: #d1fae5; color: #059669;
+    font-size: 11px; font-weight: 600; padding: 3px 8px; border-radius: 9999px;
   }
-  .checklist-item {
-    display: flex;
-    align-items: center;
-    gap: 8px;
-    font-size: 13px;
-    color: #374151;
-    padding: 5px 0;
-  }
+  .checklist-item { display: flex; align-items: center; gap: 8px; font-size: 13px; color: #374151; padding: 6px 0; }
   .check-circle {
-    width: 18px;
-    height: 18px;
-    border-radius: 50%;
-    background: #d1fae5;
-    color: #059669;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    font-size: 10px;
-    flex-shrink: 0;
+    width: 18px; height: 18px; border-radius: 50%; background: #d1fae5; color: #059669;
+    display: flex; align-items: center; justify-content: center; font-size: 10px; flex-shrink: 0;
   }
   .overlay-btn {
-    display: block;
-    width: 100%;
-    margin-top: 16px;
-    padding: 10px;
-    background: #111827;
-    color: #ffffff;
-    border: none;
-    border-radius: 9999px;
-    font-size: 13px;
-    font-weight: 500;
-    font-family: 'Inter', sans-serif;
-    cursor: pointer;
-    text-align: center;
-    text-decoration: none;
-    transition: background 0.15s;
+    display: block; width: 100%; margin-top: 16px; padding: 10px;
+    background: #111827; color: #ffffff; border: none; border-radius: 9999px;
+    font-size: 13px; font-weight: 500; font-family: 'Inter', sans-serif;
+    cursor: pointer; text-align: center; text-decoration: none; transition: background 0.15s;
   }
   .overlay-btn:hover { background: #374151; color: #ffffff; }
 
   /* ── LOGOS ── */
-  .logos-section {
-    padding: 96px 24px 0;
-    max-width: 1280px;
-    margin: 0 auto;
-  }
-  .logos-row {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    gap: 48px;
-    flex-wrap: wrap;
-  }
-  .logo-text {
-    color: #9ca3af;
-    user-select: none;
-    transition: color 0.15s;
-    cursor: default;
-  }
+  .logos-section { padding: 72px 24px 0; max-width: 1280px; margin: 0 auto; }
+  .logos-row { display: flex; align-items: center; justify-content: center; gap: 40px; flex-wrap: wrap; }
+  .logo-text { color: #c4c9d4; user-select: none; transition: color 0.15s; }
   .logo-text:hover { color: #6b7280; }
-  .logo-franken {
-    font-size: 13px;
-    font-weight: 700;
-    letter-spacing: 0.12em;
-    text-transform: uppercase;
-  }
-  .logo-symfony {
-    font-size: 16px;
-    font-style: italic;
-    font-family: Georgia, serif;
-  }
-  .logo-cc {
-    font-size: 13px;
-    font-weight: 500;
-    display: flex;
-    align-items: center;
-    gap: 6px;
-  }
-  .logo-api {
-    font-size: 16px;
-    font-style: italic;
-    font-family: Georgia, serif;
-    font-weight: 700;
-  }
-  .logo-caddy {
-    font-size: 13px;
-    font-weight: 700;
-    letter-spacing: 0.15em;
-    text-transform: uppercase;
-    font-family: monospace;
-  }
-  .logo-docker {
-    font-size: 14px;
-    font-weight: 600;
-    display: flex;
-    align-items: center;
-    gap: 6px;
-  }
+  .logo-franken { font-size: 12px; font-weight: 700; letter-spacing: 0.14em; text-transform: uppercase; }
+  .logo-symfony { font-size: 16px; font-style: italic; font-family: Georgia, serif; }
+  .logo-cc { font-size: 13px; font-weight: 500; display: flex; align-items: center; gap: 6px; }
+  .logo-api { font-size: 15px; font-style: italic; font-family: Georgia, serif; font-weight: 700; }
+  .logo-caddy { font-size: 12px; font-weight: 700; letter-spacing: 0.15em; text-transform: uppercase; font-family: 'Courier New', monospace; }
+  .logo-docker { font-size: 14px; font-weight: 600; display: flex; align-items: center; gap: 6px; }
 
   /* ── FOOTER ── */
-  .footer {
-    border-top: 1px solid #f0f0f0;
-    padding: 22px 24px 40px;
-    max-width: 1280px;
-    margin: 48px auto 0;
-  }
-  .footer-links {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 16px;
-    justify-content: center;
-    margin-bottom: 12px;
-  }
-  .footer-links a {
-    font-size: 13px;
-    color: #9ca3af;
-    transition: color 0.15s;
-  }
+  .footer { border-top: 1px solid #f0f0f0; padding: 22px 24px 48px; max-width: 1280px; margin: 48px auto 0; }
+  .footer-links { display: flex; flex-wrap: wrap; gap: 16px; justify-content: center; margin-bottom: 12px; }
+  .footer-links a { font-size: 13px; color: #9ca3af; transition: color 0.15s; }
   .footer-links a:hover { color: #111827; }
-  .footer-copy {
-    text-align: center;
-    font-size: 11px;
-    color: #d1d5db;
-  }
+  .footer-copy { text-align: center; font-size: 11px; color: #d1d5db; }
 </style>
 
 <!-- NAVIGATION -->
@@ -432,14 +234,136 @@
       <span class="nav-brand">FrankenPHP</span>
     </div>
     <div class="nav-center">
-      <a href="https://frankenphp.dev/docs/" target="_blank" rel="noopener">
-        Runtimes
-        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 12 15 18 9"/></svg>
-      </a>
-      <a href="https://www.clever-cloud.com/product/add-ons/" target="_blank" rel="noopener">
-        Add-ons
-        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 12 15 18 9"/></svg>
-      </a>
+
+      <!-- Runtimes dropdown -->
+      <div class="nav-dropdown">
+        <a href="https://developers.clever-cloud.com/doc/applications/" target="_blank" rel="noopener">
+          Runtimes
+          <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 12 15 18 9"/></svg>
+        </a>
+        <div class="dropdown-menu wide">
+          <div class="dropdown-cols">
+            <div>
+              <div class="dropdown-section-label">Web &amp; Backend</div>
+              <a class="dropdown-item" href="https://developers.clever-cloud.com/doc/applications/php/" target="_blank" rel="noopener">
+                <div class="dropdown-item-icon"><img src="https://cdn.simpleicons.org/php/777BB4" alt="PHP"></div>
+                <div class="dropdown-item-text"><span class="dropdown-item-name">PHP</span><span class="dropdown-item-desc">FrankenPHP · PHP-FPM · Worker mode</span></div>
+              </a>
+              <a class="dropdown-item" href="https://developers.clever-cloud.com/doc/applications/javascript/nodejs/" target="_blank" rel="noopener">
+                <div class="dropdown-item-icon"><img src="https://cdn.simpleicons.org/nodedotjs/339933" alt="Node.js"></div>
+                <div class="dropdown-item-text"><span class="dropdown-item-name">Node.js</span><span class="dropdown-item-desc">npm · yarn · pnpm</span></div>
+              </a>
+              <a class="dropdown-item" href="https://developers.clever-cloud.com/doc/applications/python/" target="_blank" rel="noopener">
+                <div class="dropdown-item-icon"><img src="https://cdn.simpleicons.org/python/3776AB" alt="Python"></div>
+                <div class="dropdown-item-text"><span class="dropdown-item-name">Python</span><span class="dropdown-item-desc">uWSGI · Gunicorn · FastAPI</span></div>
+              </a>
+              <a class="dropdown-item" href="https://developers.clever-cloud.com/doc/applications/java/java-maven/" target="_blank" rel="noopener">
+                <div class="dropdown-item-icon"><img src="https://cdn.simpleicons.org/openjdk/ED8B00" alt="Java"></div>
+                <div class="dropdown-item-text"><span class="dropdown-item-name">Java</span><span class="dropdown-item-desc">Maven · Gradle · Spring Boot</span></div>
+              </a>
+              <a class="dropdown-item" href="https://developers.clever-cloud.com/doc/applications/ruby/" target="_blank" rel="noopener">
+                <div class="dropdown-item-icon"><img src="https://cdn.simpleicons.org/ruby/CC342D" alt="Ruby"></div>
+                <div class="dropdown-item-text"><span class="dropdown-item-name">Ruby</span><span class="dropdown-item-desc">Rack · Rails · Puma</span></div>
+              </a>
+              <a class="dropdown-item" href="https://developers.clever-cloud.com/doc/applications/rust/" target="_blank" rel="noopener">
+                <div class="dropdown-item-icon"><img src="https://cdn.simpleicons.org/rust/000000" alt="Rust"></div>
+                <div class="dropdown-item-text"><span class="dropdown-item-name">Rust</span><span class="dropdown-item-desc">Cargo · Axum · Actix</span></div>
+              </a>
+            </div>
+            <div>
+              <div class="dropdown-section-label">Infra &amp; Specialised</div>
+              <a class="dropdown-item" href="https://developers.clever-cloud.com/doc/applications/docker/" target="_blank" rel="noopener">
+                <div class="dropdown-item-icon"><img src="https://cdn.simpleicons.org/docker/2496ED" alt="Docker"></div>
+                <div class="dropdown-item-text"><span class="dropdown-item-name">Docker</span><span class="dropdown-item-desc">Any Dockerfile · Compose</span></div>
+              </a>
+              <a class="dropdown-item" href="https://developers.clever-cloud.com/doc/applications/static/" target="_blank" rel="noopener">
+                <div class="dropdown-item-icon"><img src="https://cdn.simpleicons.org/html5/E34F26" alt="Static"></div>
+                <div class="dropdown-item-text"><span class="dropdown-item-name">Static</span><span class="dropdown-item-desc">HTML · Next.js · Astro export</span></div>
+              </a>
+              <a class="dropdown-item" href="https://developers.clever-cloud.com/doc/applications/golang/" target="_blank" rel="noopener">
+                <div class="dropdown-item-icon"><img src="https://cdn.simpleicons.org/go/00ADD8" alt="Go"></div>
+                <div class="dropdown-item-text"><span class="dropdown-item-name">Go</span><span class="dropdown-item-desc">Go modules · net/http</span></div>
+              </a>
+              <a class="dropdown-item" href="https://developers.clever-cloud.com/doc/applications/scala/" target="_blank" rel="noopener">
+                <div class="dropdown-item-icon"><img src="https://cdn.simpleicons.org/scala/DC322F" alt="Scala"></div>
+                <div class="dropdown-item-text"><span class="dropdown-item-name">Scala</span><span class="dropdown-item-desc">sbt · Akka · Play</span></div>
+              </a>
+              <a class="dropdown-item" href="https://developers.clever-cloud.com/doc/applications/dotnet/" target="_blank" rel="noopener">
+                <div class="dropdown-item-icon"><img src="https://cdn.simpleicons.org/dotnet/512BD4" alt=".NET"></div>
+                <div class="dropdown-item-text"><span class="dropdown-item-name">.NET</span><span class="dropdown-item-desc">ASP.NET Core · Blazor</span></div>
+              </a>
+              <a class="dropdown-item" href="https://developers.clever-cloud.com/doc/applications/elixir/" target="_blank" rel="noopener">
+                <div class="dropdown-item-icon"><img src="https://cdn.simpleicons.org/elixir/4B275F" alt="Elixir"></div>
+                <div class="dropdown-item-text"><span class="dropdown-item-name">Elixir</span><span class="dropdown-item-desc">Phoenix · Mix</span></div>
+              </a>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Add-ons dropdown -->
+      <div class="nav-dropdown">
+        <a href="https://www.clever-cloud.com/product/add-ons/" target="_blank" rel="noopener">
+          Add-ons
+          <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 12 15 18 9"/></svg>
+        </a>
+        <div class="dropdown-menu wide">
+          <div class="dropdown-cols">
+            <div>
+              <div class="dropdown-section-label">Databases</div>
+              <a class="dropdown-item" href="https://developers.clever-cloud.com/doc/addons/postgresql/" target="_blank" rel="noopener">
+                <div class="dropdown-item-icon"><img src="https://cdn.simpleicons.org/postgresql/4169E1" alt="PostgreSQL"></div>
+                <div class="dropdown-item-text"><span class="dropdown-item-name">PostgreSQL</span><span class="dropdown-item-desc">Managed · HA clusters</span></div>
+              </a>
+              <a class="dropdown-item" href="https://developers.clever-cloud.com/doc/addons/mysql/" target="_blank" rel="noopener">
+                <div class="dropdown-item-icon"><img src="https://cdn.simpleicons.org/mysql/4479A1" alt="MySQL"></div>
+                <div class="dropdown-item-text"><span class="dropdown-item-name">MySQL</span><span class="dropdown-item-desc">Managed · replicated</span></div>
+              </a>
+              <a class="dropdown-item" href="https://developers.clever-cloud.com/doc/addons/mongodb/" target="_blank" rel="noopener">
+                <div class="dropdown-item-icon"><img src="https://cdn.simpleicons.org/mongodb/47A248" alt="MongoDB"></div>
+                <div class="dropdown-item-text"><span class="dropdown-item-name">MongoDB</span><span class="dropdown-item-desc">Atlas-compatible</span></div>
+              </a>
+              <a class="dropdown-item" href="https://developers.clever-cloud.com/doc/addons/redis/" target="_blank" rel="noopener">
+                <div class="dropdown-item-icon"><img src="https://cdn.simpleicons.org/redis/FF4438" alt="Redis"></div>
+                <div class="dropdown-item-text"><span class="dropdown-item-name">Redis</span><span class="dropdown-item-desc">Cache · Pub-Sub · KV</span></div>
+              </a>
+              <a class="dropdown-item" href="https://developers.clever-cloud.com/doc/addons/elastic/" target="_blank" rel="noopener">
+                <div class="dropdown-item-icon"><img src="https://cdn.simpleicons.org/elastic/005571" alt="Elasticsearch"></div>
+                <div class="dropdown-item-text"><span class="dropdown-item-name">Elasticsearch</span><span class="dropdown-item-desc">Search · Kibana</span></div>
+              </a>
+            </div>
+            <div>
+              <div class="dropdown-section-label">Storage &amp; Messaging</div>
+              <a class="dropdown-item" href="https://developers.clever-cloud.com/doc/addons/cellar/" target="_blank" rel="noopener">
+                <div class="dropdown-item-icon">
+                  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#569A31" stroke-width="2"><path d="M3 7c0-1.1 4-2 9-2s9 .9 9 2v10c0 1.1-4 2-9 2s-9-.9-9-2V7z"/><path d="M3 7c0 1.1 4 2 9 2s9-.9 9-2"/></svg>
+                </div>
+                <div class="dropdown-item-text"><span class="dropdown-item-name">Cellar</span><span class="dropdown-item-desc">S3-compatible object storage</span></div>
+              </a>
+              <a class="dropdown-item" href="https://developers.clever-cloud.com/doc/addons/fs-bucket/" target="_blank" rel="noopener">
+                <div class="dropdown-item-icon">
+                  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#6b7280" stroke-width="2"><path d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z"/></svg>
+                </div>
+                <div class="dropdown-item-text"><span class="dropdown-item-name">FS Bucket</span><span class="dropdown-item-desc">Shared filesystem · NFS</span></div>
+              </a>
+              <a class="dropdown-item" href="https://developers.clever-cloud.com/doc/addons/pulsar/" target="_blank" rel="noopener">
+                <div class="dropdown-item-icon"><img src="https://cdn.simpleicons.org/apachepulsar/188FFF" alt="Pulsar"></div>
+                <div class="dropdown-item-text"><span class="dropdown-item-name">Pulsar</span><span class="dropdown-item-desc">Event streaming · queues</span></div>
+              </a>
+              <div class="dropdown-section-label" style="margin-top:4px">Platform</div>
+              <a class="dropdown-item" href="https://developers.clever-cloud.com/doc/addons/keycloak/" target="_blank" rel="noopener">
+                <div class="dropdown-item-icon"><img src="https://cdn.simpleicons.org/keycloak/4D4D4D" alt="Keycloak"></div>
+                <div class="dropdown-item-text"><span class="dropdown-item-name">Keycloak</span><span class="dropdown-item-desc">SSO · OAuth2 · OIDC</span></div>
+              </a>
+              <a class="dropdown-item" href="https://developers.clever-cloud.com/doc/addons/jenkins/" target="_blank" rel="noopener">
+                <div class="dropdown-item-icon"><img src="https://cdn.simpleicons.org/jenkins/D24939" alt="Jenkins"></div>
+                <div class="dropdown-item-text"><span class="dropdown-item-name">Jenkins</span><span class="dropdown-item-desc">CI/CD pipelines</span></div>
+              </a>
+            </div>
+          </div>
+        </div>
+      </div>
+
       <a href="https://developers.clever-cloud.com/doc/applications/docker/" target="_blank" rel="noopener">Deploy</a>
       <a href="https://developers.clever-cloud.com/doc/" target="_blank" rel="noopener">Docs</a>
     </div>
@@ -452,30 +376,25 @@
 
 <!-- HERO -->
 <section class="hero-section">
-  <div class="page-wrapper">
-
+  <div class="hero-inner">
     <div class="hero-badge animate-fade-in-up" style="opacity:0;animation-delay:0.2s">
       <span class="badge-icon">
         <svg width="14" height="14" viewBox="0 0 24 24" fill="#111827"><path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z"/></svg>
       </span>
       FrankenPHP · Worker Mode · Early Hints
     </div>
-
     <h1 class="hero-heading animate-fade-in-up" style="opacity:0;animation-delay:0.3s">
       Deploy Faster. Scale Smarter.<br>
       <span class="gradient-text">PHP Powers You Up.</span>
     </h1>
-
     <p class="hero-sub animate-fade-in-up" style="opacity:0;animation-delay:0.4s">
       FrankenPHP + Symfony on Clever Cloud — worker mode, early hints,
       and API Platform out of the box.
     </p>
-
     <div class="hero-ctas animate-fade-in-up" style="opacity:0;animation-delay:0.5s">
       <a class="btn-primary" href="/api" target="_blank" rel="noopener">Open Swagger UI</a>
       <a class="hero-link" href="/api/monsters.jsonld" target="_blank" rel="noopener">Monsters API</a>
     </div>
-
   </div>
 </section>
 
@@ -483,22 +402,22 @@
 <div class="tabs-wrapper animate-fade-in-up" style="opacity:0;animation-delay:0.6s">
   <div class="tabs-bar" id="tabs-bar">
     <button class="tab-btn active" data-tab="worker">
-      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z"/></svg>
+      <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z"/></svg>
       Worker Mode
     </button>
     <span class="tab-sep"></span>
     <button class="tab-btn" data-tab="api">
-      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"/><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"/></svg>
+      <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"/><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"/></svg>
       API Platform
     </button>
     <span class="tab-sep"></span>
     <button class="tab-btn" data-tab="perf">
-      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="20" x2="18" y2="10"/><line x1="12" y1="20" x2="12" y2="4"/><line x1="6" y1="20" x2="6" y2="14"/></svg>
+      <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="20" x2="18" y2="10"/><line x1="12" y1="20" x2="12" y2="4"/><line x1="6" y1="20" x2="6" y2="14"/></svg>
       Performance
     </button>
     <span class="tab-sep"></span>
     <button class="tab-btn" data-tab="deploy">
-      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4.5 16.5c-1.5 1.26-2 5-2 5s3.74-.5 5-2c.71-.84.7-2.13-.09-2.91a2.18 2.18 0 0 0-2.91-.09z"/><path d="m12 15-3-3a22 22 0 0 1 2-3.95A12.88 12.88 0 0 1 22 2c0 2.72-.78 7.5-6 11a22.35 22.35 0 0 1-4 2z"/><path d="M9 12H4s.55-3.03 2-4c1.62-1.08 5 0 5 0"/><path d="M12 15v5s3.03-.55 4-2c1.08-1.62 0-5 0-5"/></svg>
+      <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4.5 16.5c-1.5 1.26-2 5-2 5s3.74-.5 5-2c.71-.84.7-2.13-.09-2.91a2.18 2.18 0 0 0-2.91-.09z"/><path d="m12 15-3-3a22 22 0 0 1 2-3.95A12.88 12.88 0 0 1 22 2c0 2.72-.78 7.5-6 11a22.35 22.35 0 0 1-4 2z"/><path d="M9 12H4s.55-3.03 2-4c1.62-1.08 5 0 5 0"/><path d="M12 15v5s3.03-.55 4-2c1.08-1.62 0-5 0-5"/></svg>
       Deploy
     </button>
   </div>
@@ -507,107 +426,66 @@
 <!-- VIDEO + OVERLAYS -->
 <div class="video-section animate-fade-in-up" style="opacity:0;animation-delay:0.7s">
   <div class="video-container" id="video-container">
-    <video
-      src="https://d8j0ntlcm91z4.cloudfront.net/user_38xzZboKViGWJOttwIXH07lWA1P/hf_20260319_165750_358b1e72-c921-48b7-aaac-f200994f32fb.mp4"
-      autoplay loop muted playsinline>
-    </video>
+    <video src="https://d8j0ntlcm91z4.cloudfront.net/user_38xzZboKViGWJOttwIXH07lWA1P/hf_20260319_165750_358b1e72-c921-48b7-aaac-f200994f32fb.mp4"
+      autoplay loop muted playsinline></video>
 
     <!-- Overlay: Worker Mode -->
     <div class="overlay animate-fade-in-overlay" data-overlay="worker">
-      <div class="overlay-card animate-slide-up-overlay">
+      <div class="overlay-card">
         <div class="overlay-title">FrankenPHP Worker</div>
         <div class="overlay-progress-track">
           <div class="overlay-progress-fill" style="width:25%;background:#7c3aed;"></div>
         </div>
         <div class="overlay-steps">
-          <div class="overlay-step">
-            <span class="step-icon step-done">✓</span> Boot
-          </div>
-          <div class="overlay-step">
-            <span class="step-icon step-done">✓</span> Warm
-          </div>
-          <div class="overlay-step">
-            <span class="step-icon step-spin">●</span> Ready
-          </div>
-          <div class="overlay-step">
-            <span class="step-icon step-wait">○</span> Serving
-          </div>
+          <div class="overlay-step"><span class="step-icon step-done">✓</span> Boot</div>
+          <div class="overlay-step"><span class="step-icon step-done">✓</span> Warm</div>
+          <div class="overlay-step"><div class="step-spin-el"></div> Ready</div>
+          <div class="overlay-step"><span class="step-wait">○</span> Serving</div>
         </div>
       </div>
     </div>
 
     <!-- Overlay: API Platform -->
     <div class="overlay animate-fade-in-overlay" data-overlay="api" style="display:none">
-      <div class="overlay-card animate-slide-up-overlay">
+      <div class="overlay-card">
         <div class="overlay-title">API Platform</div>
         <div class="overlay-progress-track">
           <div class="overlay-progress-fill" style="width:67%;background:#f97316;"></div>
         </div>
         <div class="overlay-steps">
-          <div class="overlay-step">
-            <span class="method-badge m-get">GET</span> /api/monsters
-          </div>
-          <div class="overlay-step">
-            <span class="method-badge m-post">POST</span> /api/monsters
-          </div>
-          <div class="overlay-step">
-            <span class="method-badge m-get">GET</span> /api/monsters/{id}
-          </div>
-          <div class="overlay-step">
-            <span class="method-badge m-delete">DEL</span> /api/monsters/{id}
-          </div>
+          <div class="overlay-step"><span class="method-badge m-get">GET</span> /api/monsters</div>
+          <div class="overlay-step"><span class="method-badge m-post">POST</span> /api/monsters</div>
+          <div class="overlay-step"><span class="method-badge m-get">GET</span> /api/monsters/{id}</div>
+          <div class="overlay-step"><span class="method-badge m-delete">DEL</span> /api/monsters/{id}</div>
         </div>
       </div>
     </div>
 
     <!-- Overlay: Performance -->
     <div class="overlay animate-fade-in-overlay" data-overlay="perf" style="display:none">
-      <div class="overlay-card animate-slide-up-overlay">
+      <div class="overlay-card">
         <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:16px;">
           <div class="overlay-title" style="margin:0">Benchmark Results</div>
           <span class="badge-success">✓ Passed</span>
         </div>
-        <div class="metric-row">
-          <span style="color:#6b7280">Throughput</span>
-          <span class="metric-val">12 400 req/s</span>
-        </div>
-        <div class="metric-row">
-          <span style="color:#6b7280">Latency P99</span>
-          <span class="metric-val">&lt; 2 ms</span>
-        </div>
-        <div class="metric-row">
-          <span style="color:#6b7280">Errors</span>
-          <span class="metric-val" style="color:#059669">0</span>
-        </div>
-        <div class="metric-row">
-          <span style="color:#6b7280">Worker Mode</span>
-          <span class="metric-val" style="color:#7c3aed">ON</span>
-        </div>
+        <div class="metric-row"><span style="color:#6b7280">Throughput</span><span class="metric-val">12 400 req/s</span></div>
+        <div class="metric-row"><span style="color:#6b7280">Latency P99</span><span class="metric-val">&lt; 2 ms</span></div>
+        <div class="metric-row"><span style="color:#6b7280">Errors</span><span class="metric-val" style="color:#059669">0</span></div>
+        <div class="metric-row"><span style="color:#6b7280">Worker Mode</span><span class="metric-val" style="color:#7c3aed">ON</span></div>
       </div>
     </div>
 
     <!-- Overlay: Deploy -->
     <div class="overlay animate-fade-in-overlay" data-overlay="deploy" style="display:none">
-      <div class="overlay-card animate-slide-up-overlay">
+      <div class="overlay-card">
         <div class="overlay-title">Deploy to Clever Cloud</div>
-        <div class="checklist-item">
-          <span class="check-circle">✓</span> Dockerfile detected
-        </div>
-        <div class="checklist-item">
-          <span class="check-circle">✓</span> FrankenPHP runtime
-        </div>
-        <div class="checklist-item">
-          <span class="check-circle">✓</span> Environment variables set
-        </div>
-        <div class="checklist-item">
-          <span class="check-circle">✓</span> Health check passing
-        </div>
-        <a class="overlay-btn" href="https://console.clever-cloud.com" target="_blank" rel="noopener">
-          View on Clever Cloud
-        </a>
+        <div class="checklist-item"><span class="check-circle">✓</span> Dockerfile detected</div>
+        <div class="checklist-item"><span class="check-circle">✓</span> FrankenPHP runtime</div>
+        <div class="checklist-item"><span class="check-circle">✓</span> Environment variables set</div>
+        <div class="checklist-item"><span class="check-circle">✓</span> Health check passing</div>
+        <a class="overlay-btn" href="https://console.clever-cloud.com" target="_blank" rel="noopener">View on Clever Cloud</a>
       </div>
     </div>
-
   </div>
 </div>
 
@@ -644,27 +522,21 @@
 
 <script>
 (function () {
-  var tabs   = ['worker', 'api', 'perf', 'deploy'];
+  var tabs = ['worker', 'api', 'perf', 'deploy'];
   var current = 0;
   var interval;
 
   function setTab(name) {
     document.querySelectorAll('[data-tab]').forEach(function (btn) {
-      if (btn.dataset.tab === name) {
-        btn.classList.add('active');
-      } else {
-        btn.classList.remove('active');
-      }
+      btn.classList.toggle('active', btn.dataset.tab === name);
     });
-
     document.querySelectorAll('[data-overlay]').forEach(function (el) {
-      if (el.dataset.overlay === name) {
-        el.style.display = '';
+      var show = el.dataset.overlay === name;
+      el.style.display = show ? '' : 'none';
+      if (show) {
         el.classList.remove('animate-fade-in-overlay');
         void el.offsetWidth;
         el.classList.add('animate-fade-in-overlay');
-      } else {
-        el.style.display = 'none';
       }
     });
   }
