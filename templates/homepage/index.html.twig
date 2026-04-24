@@ -115,6 +115,33 @@
   }
   .hero-link:hover { color: #374151; }
 
+  /* ── CERT BADGE ── */
+  .hero-cert { margin-top: 24px; }
+  .cert-badge {
+    display: inline-flex; align-items: center; gap: 8px;
+    padding: 8px 16px; border-radius: 9999px;
+    border: 1px solid #e5e7eb;
+    background: linear-gradient(135deg, #fafafa 0%, #f3f4f6 100%);
+    font-size: 13px; font-weight: 500; color: #374151;
+    transition: all 0.2s; text-decoration: none;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.06);
+  }
+  .cert-badge:hover {
+    border-color: #111827; color: #111827;
+    background: linear-gradient(135deg, #f9fafb 0%, #f3f4f6 100%);
+    box-shadow: 0 2px 8px rgba(0,0,0,0.10);
+    transform: translateY(-1px);
+  }
+  .cert-icon {
+    display: flex; align-items: center; justify-content: center;
+    width: 22px; height: 22px; border-radius: 50%;
+    background: #111827; color: #fff; flex-shrink: 0;
+  }
+  .cert-icon svg { stroke: #fff; }
+  .cert-label { letter-spacing: -0.01em; }
+  .cert-arrow { color: #9ca3af; font-size: 12px; transition: color 0.2s; }
+  .cert-badge:hover .cert-arrow { color: #111827; }
+
   /* ── TABS BAR ── */
   .tabs-wrapper { padding: 0 24px; max-width: 1280px; margin: 0 auto 16px; text-align: center; }
   .tabs-bar {
@@ -303,7 +330,7 @@
 
       <!-- Add-ons dropdown -->
       <div class="nav-dropdown">
-        <a href="https://www.clever-cloud.com/product/add-ons/" target="_blank" rel="noopener">
+        <a href="https://developers.clever-cloud.com/doc/addons/" target="_blank" rel="noopener">
           Add-ons
           <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 12 15 18 9"/></svg>
         </a>
@@ -366,6 +393,7 @@
 
       <a href="https://developers.clever-cloud.com/doc/applications/docker/" target="_blank" rel="noopener">Deploy</a>
       <a href="https://developers.clever-cloud.com/doc/" target="_blank" rel="noopener">Docs</a>
+
     </div>
     <div class="nav-right">
       <a class="nav-link" href="https://www.clever-cloud.com" target="_blank" rel="noopener">clever-cloud.com</a>
@@ -394,6 +422,16 @@
     <div class="hero-ctas animate-fade-in-up" style="opacity:0;animation-delay:0.5s">
       <a class="btn-primary" href="/api" target="_blank" rel="noopener">Open Swagger UI</a>
       <a class="hero-link" href="/api/monsters.jsonld" target="_blank" rel="noopener">Monsters API</a>
+    </div>
+
+    <div class="hero-cert animate-fade-in-up" style="opacity:0;animation-delay:0.6s">
+      <a class="cert-badge" href="https://academy.clever.cloud/" target="_blank" rel="noopener">
+        <span class="cert-icon">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 10v6M2 10l10-5 10 5-10 5z"/><path d="M6 12v5c3 3 9 3 12 0v-5"/></svg>
+        </span>
+        <span class="cert-label">Certification Clever Cloud disponible</span>
+        <span class="cert-arrow">↗</span>
+      </a>
     </div>
   </div>
 </section>
@@ -515,7 +553,7 @@
     <a href="https://frankenphp.dev/docs/" target="_blank" rel="noopener">FrankenPHP</a>
     <a href="https://symfony.com/doc/current/index.html" target="_blank" rel="noopener">Symfony</a>
     <a href="https://api-platform.com/docs/" target="_blank" rel="noopener">API Platform</a>
-    <a href="https://academy.clever.cloud/" target="_blank" rel="noopener">Certification CC</a>
+    <a href="https://academy.clever.cloud/" target="_blank" rel="noopener" style="font-weight:600;color:#374151;">Certification CC ↗</a>
   </div>
   <p class="footer-copy">Open source demo &middot; Deployed on Clever Cloud</p>
 </footer>
