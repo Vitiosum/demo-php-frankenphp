@@ -1,0 +1,31 @@
+/* Styles propres à la démo FrankenPHP — le kit partagé reste intact dans cc-brand.css */
+[hidden] { display: none !important; }
+.cc-topbar__link { white-space: nowrap; }
+
+/* Héro : titre sur deux lignes forcées, légèrement plus compact que le kit */
+.hero-title { max-width: none; font-size: clamp(36px, 5.6vw, 64px); }
+
+/* Onglets : 2 × 2 sur mobile plutôt qu'un défilement horizontal */
+@media (max-width: 640px) {
+  .cc-tabs { display: grid; grid-template-columns: 1fr 1fr; border-radius: 18px; }
+  .cc-tab { text-align: center; }
+}
+
+/* Panneaux d'onglet */
+.panel { animation: cc-reveal 0.35s cubic-bezier(0.2, 0.7, 0.2, 1); }
+.panel__head { display: flex; align-items: center; justify-content: space-between; gap: 12px; flex-wrap: wrap; }
+.panel .cc-card__title { font-size: 20px; margin-top: 6px; }
+.panel .cc-list, .panel .cc-code, .bench-table { margin-top: 16px; }
+.panel .cc-row { padding: 10px 14px; }
+.panel .cc-row__title { font-size: 15px; }
+.panel__actions { display: flex; flex-wrap: wrap; gap: 10px; margin-top: 18px; }
+.method { min-width: 72px; justify-content: center; font-family: var(--cc-mono); }
+
+/* Tableau et cartes benchmark */
+.bench-table td:not(:first-child), .bench-table th:not(:first-child) { text-align: right; font-family: var(--cc-mono); font-variant-numeric: tabular-nums; white-space: nowrap; }
+.bench-table .is-best td { color: var(--cc-text); font-weight: 600; }
+.bench-table .is-best td:first-child::after { content: "★"; margin-left: 6px; color: var(--cc-orange); }
+.bench-links { display: flex; flex-wrap: wrap; gap: 8px 14px; margin-top: 12px; font-size: 13px; }
+.bench-links a { color: var(--cc-text-2); border-bottom: 1px solid var(--cc-border-strong); }
+.bench-links a:hover { color: var(--cc-orange); border-color: var(--cc-orange); }
+.cc-card--best { border-color: rgba(245, 116, 97, 0.55); box-shadow: var(--cc-shadow); }
