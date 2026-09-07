@@ -1,17 +1,61 @@
 # Symfony + FrankenPHP — PHP worker mode on Clever Cloud
 
-> A Symfony application running on FrankenPHP in worker mode, deployed as a Docker app on Clever Cloud. Demonstrates how to run a modern PHP app with persistent worker processes — dressed with the Clever Brand Kit, certification front and centre.
+> A Symfony application running on FrankenPHP in worker mode, deployed on the **FrankenPHP runtime** of Clever Cloud (no Docker image to build). Demonstrates how to run a modern PHP app with persistent worker processes — dressed with the Clever Brand Kit, certification front and centre.
 
 ---
 
 ## Deploy on Clever Cloud
 
 1. Fork this repository
-2. In the Clever Cloud console, create a new **Docker** application — connect your forked repo
-3. No add-on needed (uses SQLite)
-4. The `.env` file is committed — no manual environment variables to set
-5. The `.clever.json` file is committed — the app binding is pre-configured
-6. Push → Clever Cloud builds the Docker image and deploys automatically
+2. Create a **FrankenPHP** application and link it to your fork:
+
+   ```bash
+   clever create -t frankenphp demo-php-frankenphp
+   clever link <app_id>          # or reuse the committed .clever.json
+   ```
+
+3. Set the environment variables (console → *Environment variables*, or `clever env set`) — see the table below. `APP_SECRET` is **mandatory**: the committed `.env` only carries a placeholder.
+4. No add-on needed by default (SQLite, see *Data* below)
+5. `git push` (or `clever deploy`) → Clever Cloud runs `composer install --no-dev --no-scripts`, then the hooks, then starts FrankenPHP
+
+### Environment variables
+
+| Variable | Required | Value / description |
+|----------|----------|---------------------|
+| `APP_SECRET` | **yes** | Real secret, e.g. `php -r 'echo bin2hex(random_bytes(32));'` — overrides the placeholder committed in `.env` |
+| `APP_ENV` | yes | `prod` |
+| `APP_DEBUG` | yes | `0` |
+| `CC_WEBROOT` | yes | `public` |
+| `CC_FRANKENPHP_WORKER` | yes | `/public/index.php` — **enables worker mode**, the whole point of this demo (`symfony/runtime` + `runtime/frankenphp-symfony` support it natively) |
+| `CC_PRE_RUN_HOOK` | yes | `php bin/console doctrine:migrations:migrate --no-interaction` — creates the schema before each start |
+| `CC_POST_BUILD_HOOK` | yes | `php bin/console assets:install public --no-interaction` — installs the Swagger UI assets of API Platform (`public/bundles/` is git-ignored and Composer scripts are not run at build time) |
+| `CC_HEALTH_CHECK_PATH` | recommended | `/health` — served by `MainController::health()`, returns `200 {"status":"ok"}` |
+| `DATABASE_URL` | no | Defaults to SQLite in `.env`; set it to the PostgreSQL add-on URI if you link one |
+
+Equivalent CLI:
+
+```bash
+clever env set APP_SECRET "$(php -r 'echo bin2hex(random_bytes(32));')"
+clever env set APP_ENV prod
+clever env set APP_DEBUG 0
+clever env set CC_WEBROOT public
+clever env set CC_FRANKENPHP_WORKER /public/index.php
+clever env set CC_PRE_RUN_HOOK "php bin/console doctrine:migrations:migrate --no-interaction"
+clever env set CC_POST_BUILD_HOOK "php bin/console assets:install public --no-interaction"
+clever env set CC_HEALTH_CHECK_PATH /health
+```
+
+### Data
+
+The default `DATABASE_URL` points to SQLite in `var/data.db`. On Clever Cloud this file lives on the instance's ephemeral filesystem: it is **recreated at every deployment or restart** (`CC_PRE_RUN_HOOK` replays the migration and its seed) and it is **not shared** between instances — keep the app at 1 instance, or treat the data as throw-away demo data.
+
+For persistent data, link a PostgreSQL add-on (plan DEV is enough for a demo) and set `DATABASE_URL` to its `POSTGRESQL_ADDON_URI`; the Doctrine migration is dialect-agnostic.
+
+### About `.env`, `Caddyfile` and `static-build.Dockerfile`
+
+- `.env` is committed on purpose (Symfony Dotenv needs it to boot) and only contains non-secret defaults plus an `APP_SECRET` placeholder. Real environment variables set in the console always win over `.env`.
+- `Caddyfile` and `benchmark.Caddyfile` are **not used by the Clever Cloud runtime** (which ships its own Caddy configuration driven by `CC_*` variables). They are kept for running FrankenPHP locally (`frankenphp run`) and for the k6 benchmarks.
+- `static-build.Dockerfile` is **not used by the Clever Cloud runtime** either: it builds an optional standalone static binary of the app (see [frankenphp.dev/docs/static](https://frankenphp.dev/docs/static/)). `.dockerignore` keeps `.git`, `var/`, `vendor/` and local `.env.*` files out of that build context.
 
 ---
 
@@ -19,11 +63,11 @@
 
 | Layer      | Technology          |
 |------------|---------------------|
-| Language   | PHP 8.3             |
-| Framework  | Symfony 7 + API Platform 3 |
-| Server     | FrankenPHP (worker mode) |
-| Database   | SQLite (local)      |
-| Deploy     | Docker on Clever Cloud |
+| Language   | PHP 8.2+ (Clever Cloud FrankenPHP runtime) |
+| Framework  | Symfony 7.4 + API Platform 3.4 |
+| Server     | FrankenPHP (worker mode via `CC_FRANKENPHP_WORKER`) |
+| Database   | SQLite (ephemeral) — PostgreSQL add-on optional |
+| Deploy     | Clever Cloud FrankenPHP runtime |
 | Design     | Clever Brand Kit (Plus Jakarta Sans, navy #13172e, dégradé Clever) |
 
 ---
@@ -35,7 +79,12 @@
 - Clever Brand Kit landing page: sticky brand bar, hero, **certification block**, four content tabs (Worker Mode / API Platform / Performance / Deploy), k6 benchmark cards, platform panel, footer
 - Platform panel "Vu depuis Clever Cloud" reads the variables injected by the platform (see below)
 - k6 reports served at `/benchmark/{name}` (e.g. `/benchmark/summary-100-vus-worker`) from the committed `benchmark/` folder
+- `/health` endpoint for the Clever Cloud health check
 - Responsive layout — no horizontal scroll at 375 px, single dark theme
+
+### API write access
+
+`POST/PUT/PATCH/DELETE /api/monsters` are deliberately left open (no authentication) so the Swagger UI can be demoed end to end; the `name` field is validated (`NotBlank`, max 255 characters → `422` otherwise) and the SQLite database is reset at every deployment. To lock it down, either restrict the resource to read operations (`#[ApiResource(operations: [new Get(), new GetCollection()])]`) or add an `access_control` rule on `^/api` for write methods in `config/packages/security.yaml`.
 
 ---
 
@@ -63,16 +112,6 @@ Reference: [Clever Cloud environment variables](https://www.clever.cloud/develop
 
 ---
 
-## Environment Variables
-
-| Variable | Required | Description                                 |
-|----------|----------|---------------------------------------------|
-| —        | —        | All config is in the committed `.env` file  |
-
-> The `.env` file must remain committed for Symfony to boot on Clever Cloud.
-
----
-
 ## Project Structure
 
 ```
@@ -87,11 +126,15 @@ demo-php-frankenphp/
 │   ├── cc-brand.css              # Shared Clever Brand Kit — copied as-is, do not edit
 │   ├── demo.css                  # Demo-specific styles (tabs, benchmark table)
 │   └── index.php                 # Web root / FrankenPHP worker script
-├── src/Controller/MainController.php  # Homepage (+ platform panel data), /benchmark/{name}
+├── src/
+│   ├── Controller/MainController.php  # Homepage (+ platform panel data), /health, /benchmark/{name}, /download-logo
+│   └── Entity/Monster.php        # API Platform resource (validated name)
+├── migrations/                   # Doctrine migration (schema + seed), replayed by CC_PRE_RUN_HOOK
 ├── benchmark/                    # k6 script and HTML reports (FPM / no-worker / worker)
-├── static-build.Dockerfile       # Docker build config
-├── Caddyfile                     # FrankenPHP / Caddy config (worker ./public/index.php)
-├── .env                          # Committed — required by Symfony
+├── Caddyfile                     # Local FrankenPHP config only (not used on Clever Cloud)
+├── static-build.Dockerfile       # Optional static binary build (not used on Clever Cloud)
+├── .dockerignore                 # Build context of static-build.Dockerfile
+├── .env                          # Committed — Symfony defaults + APP_SECRET placeholder
 └── .clever.json                  # Clever Cloud app binding
 ```
 
@@ -102,17 +145,19 @@ demo-php-frankenphp/
 ```bash
 composer install
 APP_ENV=dev php -S 127.0.0.1:8083 -t public
-# http://127.0.0.1:8083/  ·  http://127.0.0.1:8083/api
+# http://127.0.0.1:8083/  ·  http://127.0.0.1:8083/api  ·  http://127.0.0.1:8083/health
 php bin/console lint:twig templates
+composer audit
 ```
 
-Without FrankenPHP the platform panel shows « Worker : inactif (php -S) » — expected outside Clever Cloud.
+Without FrankenPHP the platform panel shows « Worker : inactif (php -S) » — expected outside Clever Cloud. To try worker mode locally: `frankenphp run` (uses the committed `Caddyfile`).
 
 ---
 
 ## Deployment Notes
 
-- App type on Clever Cloud: **Docker** (not PHP runtime)
-- `.env` must stay committed — Symfony requires it at boot time
+- App type on Clever Cloud: **FrankenPHP** runtime (not Docker, not the PHP/Apache runtime)
+- `.env` must stay committed — Symfony requires it at boot time; secrets are set in the console
 - `.clever.json` must stay committed — it binds the app to the Clever Cloud instance
-- HTTPS is terminated at the Clever Cloud proxy — no HTTPS config needed inside the app
+- HTTPS is terminated at the Clever Cloud proxy — no HTTPS config needed inside the app; `trusted_proxies`/`trusted_headers` in `config/packages/framework.yaml` make Symfony honour `X-Forwarded-Proto`/`For`
+- Known dependency debt: `api-platform/core` 3.4 has two medium advisories only fixed in 4.x (migration to plan separately)
