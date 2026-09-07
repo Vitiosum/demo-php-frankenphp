@@ -11,8 +11,10 @@
 
    ```bash
    clever create -t frankenphp demo-php-frankenphp
-   clever link <app_id>          # or reuse the committed .clever.json
+   clever link <app_id>          # writes the binding into .clever.json
    ```
+
+   The committed `.clever.json` is empty (`{"apps": []}`): no application is bound in this repository, `clever link` fills it in your own clone.
 
 3. Set the environment variables (console → *Environment variables*, or `clever env set`) — see the table below. `APP_SECRET` is **mandatory**: the committed `.env` only carries a placeholder.
 4. No add-on needed by default (SQLite, see *Data* below)
@@ -49,7 +51,7 @@ clever env set CC_HEALTH_CHECK_PATH /health
 
 The default `DATABASE_URL` points to SQLite in `var/data.db`. On Clever Cloud this file lives on the instance's ephemeral filesystem: it is **recreated at every deployment or restart** (`CC_PRE_RUN_HOOK` replays the migration and its seed) and it is **not shared** between instances — keep the app at 1 instance, or treat the data as throw-away demo data.
 
-For persistent data, link a PostgreSQL add-on (plan DEV is enough for a demo) and set `DATABASE_URL` to its `POSTGRESQL_ADDON_URI`; the Doctrine migration is dialect-agnostic.
+For persistent data, link a PostgreSQL add-on (plan DEV is enough for a demo) and set `DATABASE_URL` to its `POSTGRESQL_ADDON_URI`. Note that the committed migration `Version20220929114250` is **SQLite-specific** (`INTEGER PRIMARY KEY AUTOINCREMENT`, `CLOB`): on PostgreSQL it must be regenerated (`php bin/console doctrine:migrations:diff` against the add-on, or `doctrine:schema:update` for a throw-away demo).
 
 ### About `.env`, `Caddyfile` and `static-build.Dockerfile`
 
@@ -128,14 +130,15 @@ demo-php-frankenphp/
 │   └── index.php                 # Web root / FrankenPHP worker script
 ├── src/
 │   ├── Controller/MainController.php  # Homepage (+ platform panel data), /health, /benchmark/{name}, /download-logo
+│   ├── EventSubscriber/SecurityHeadersSubscriber.php  # nosniff, Referrer-Policy, X-Frame-Options
 │   └── Entity/Monster.php        # API Platform resource (validated name)
-├── migrations/                   # Doctrine migration (schema + seed), replayed by CC_PRE_RUN_HOOK
+├── migrations/                   # Doctrine migration (SQLite schema + seed), replayed by CC_PRE_RUN_HOOK
 ├── benchmark/                    # k6 script and HTML reports (FPM / no-worker / worker)
 ├── Caddyfile                     # Local FrankenPHP config only (not used on Clever Cloud)
 ├── static-build.Dockerfile       # Optional static binary build (not used on Clever Cloud)
 ├── .dockerignore                 # Build context of static-build.Dockerfile
 ├── .env                          # Committed — Symfony defaults + APP_SECRET placeholder
-└── .clever.json                  # Clever Cloud app binding
+└── .clever.json                  # Clever Cloud app binding — committed empty, filled by `clever link`
 ```
 
 ---
@@ -158,6 +161,6 @@ Without FrankenPHP the platform panel shows « Worker : inactif (php -S) » — 
 
 - App type on Clever Cloud: **FrankenPHP** runtime (not Docker, not the PHP/Apache runtime)
 - `.env` must stay committed — Symfony requires it at boot time; secrets are set in the console
-- `.clever.json` must stay committed — it binds the app to the Clever Cloud instance
+- `.clever.json` is committed empty (`{"apps": []}`) — no application is bound here; `clever link` writes the binding of *your* application into it
 - HTTPS is terminated at the Clever Cloud proxy — no HTTPS config needed inside the app; `trusted_proxies`/`trusted_headers` in `config/packages/framework.yaml` make Symfony honour `X-Forwarded-Proto`/`For`
 - Known dependency debt: `api-platform/core` 3.4 has two medium advisories only fixed in 4.x (migration to plan separately)
