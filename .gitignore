@@ -8,3 +8,14 @@
 /var/
 /vendor/
 ###< symfony/framework-bundle ###
+
+###> audit 2026-09 : OS, IDE, caches, bases locales ###
+.DS_Store
+/.idea/
+/.vscode/
+/.phpunit.result.cache
+/composer.phar
+*.db
+*.sqlite
+/public/debug*
+###< audit 2026-09 ###

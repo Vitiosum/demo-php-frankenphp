@@ -1,0 +1,11 @@
+.git
+.gitignore
+var/
+vendor/
+public/bundles/
+.env.local
+.env.*.local
+.env.local.php
+docs/
+node_modules/
+.DS_Store
