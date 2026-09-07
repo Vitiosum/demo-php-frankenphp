@@ -25,7 +25,7 @@
         <div class="cc-topbar__demo"><small>Démo</small>FrankenPHP + Symfony</div>
         <span class="cc-topbar__spacer"></span>
         <nav class="cc-topbar__nav" aria-label="Statut et liens">
-          <span class="cc-pill cc-pill--mono cc-hide-sm">PHP 8.3 · Symfony 7 · FrankenPHP worker</span>
+          <span class="cc-pill cc-pill--mono cc-hide-sm">PHP {{ cc is defined ? cc.phpShort : '8.4' }} · Symfony 7 · FrankenPHP worker</span>
           {% if cc is defined and cc.live %}
             <span class="cc-pill cc-pill--live"><span class="cc-dot"></span>Live on Clever Cloud</span>
           {% else %}
@@ -46,13 +46,13 @@
         <div class="cc-footer__inner">
           <div class="cc-footer__brand">
             {% include 'partials/cc-logo.svg.twig' %}
-            <p>PaaS européen entièrement managé. Un Dockerfile, un git push : la plateforme construit l'image et s'occupe du reste.</p>
+            <p>PaaS européen entièrement managé. Un git push : la plateforme détecte le runtime, installe les dépendances et s'occupe du reste.</p>
             <div class="cc-trust"><span>ISO 27001</span><span>HDS</span><span>HÉBERGÉ EN FRANCE</span></div>
           </div>
           <div>
             <h4>Documentation</h4>
             <ul>
-              <li><a href="https://www.clever.cloud/developers/doc/applications/docker/" target="_blank" rel="noopener">Runtime Docker</a></li>
+              <li><a href="https://www.clever.cloud/developers/doc/applications/frankenphp/" target="_blank" rel="noopener">Runtime FrankenPHP</a></li>
               <li><a href="https://www.clever.cloud/developers/doc/applications/php/" target="_blank" rel="noopener">Runtime PHP</a></li>
               <li><a href="https://console.clever-cloud.com" target="_blank" rel="noopener">Console Clever Cloud</a></li>
               <li><a href="https://frankenphp.dev/docs/" target="_blank" rel="noopener">FrankenPHP</a></li>

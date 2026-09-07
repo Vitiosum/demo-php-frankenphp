@@ -68,6 +68,7 @@ class MainController extends AbstractController
             'commit' => $cut($g('CC_COMMIT_ID'), 7),
             'deployment' => $cut($g('CC_DEPLOYMENT_ID'), 16),
             'php' => PHP_VERSION,
+            'phpShort' => PHP_MAJOR_VERSION.'.'.PHP_MINOR_VERSION,
             'worker' => (bool) ($_SERVER['FRANKENPHP_WORKER'] ?? false),
         ];
     }

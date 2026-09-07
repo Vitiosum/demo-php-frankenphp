@@ -7,11 +7,11 @@
 {# ── Héro ── #}
 <section class="cc-hero">
   <div class="cc-container">
-    <div class="cc-eyebrow cc-reveal" style="--i:0">Runtime Docker · FrankenPHP · Symfony 7</div>
+    <div class="cc-eyebrow cc-reveal" style="--i:0">Runtime FrankenPHP · Symfony 7 · API Platform</div>
     <h1 class="cc-hero__title hero-title cc-reveal" style="--i:1">PHP en mode worker,<br><span class="cc-grad-text">déployé sur Clever Cloud.</span></h1>
-    <p class="cc-hero__lead cc-reveal" style="--i:2">Une application Symfony 7 servie par FrankenPHP en mode worker, avec API Platform et les Early Hints 103. <strong>Un Dockerfile, un git push</strong> : Clever Cloud construit l'image, la démarre et publie l'app en HTTPS sur son domaine.</p>
+    <p class="cc-hero__lead cc-reveal" style="--i:2">Une application Symfony 7 servie par FrankenPHP en mode worker, avec API Platform et les Early Hints 103. <strong>Aucun Dockerfile à écrire</strong> : Clever Cloud fournit le binaire FrankenPHP, installe les dépendances Composer, démarre le worker et publie l'app en HTTPS sur son domaine.</p>
     <ul class="cc-facts cc-reveal" style="--i:3">
-      <li>Image Docker buildée par Clever Cloud</li>
+      <li>Runtime FrankenPHP managé</li>
       <li>Worker FrankenPHP persistant</li>
       <li>HTTPS et domaine inclus</li>
       <li>Early Hints 103</li>
@@ -126,23 +126,26 @@ frankenphp {
 
         <div class="cc-card cc-card--pad panel" id="panel-deploy" role="tabpanel" data-panel="deploy" hidden>
           <div class="panel__head">
-            <div class="cc-card__label">Déploiement Docker</div>
+            <div class="cc-card__label">Déploiement FrankenPHP</div>
             <span class="cc-badge cc-badge--ok">git push</span>
           </div>
-          <div class="cc-card__title">Un Dockerfile, un push, une URL en HTTPS</div>
-          <p class="cc-card__hint">L'app est déclarée en type <strong>Docker</strong> : Clever Cloud construit l'image à chaque push, l'exécute sur le port <span class="cc-kbd">$PORT</span> et termine le TLS devant FrankenPHP.</p>
+          <div class="cc-card__title">Aucun Dockerfile, un push, une URL en HTTPS</div>
+          <p class="cc-card__hint">L'app est déclarée en type <strong>FrankenPHP</strong> : Clever Cloud fournit le binaire, installe les dépendances Composer à chaque push, démarre le worker sur le port <span class="cc-kbd">$PORT</span> et termine le TLS devant lui.</p>
           <ul class="cc-list">
-            <li class="cc-row"><span class="cc-badge cc-badge--ok">✓</span><div class="cc-row__main"><div class="cc-row__title">Dockerfile détecté</div><div class="cc-row__meta">Image FrankenPHP construite par la plateforme</div></div></li>
-            <li class="cc-row"><span class="cc-badge cc-badge--ok">✓</span><div class="cc-row__main"><div class="cc-row__title">Runtime FrankenPHP</div><div class="cc-row__meta">Caddy + PHP dans un seul binaire, mode worker activé</div></div></li>
-            <li class="cc-row"><span class="cc-badge cc-badge--ok">✓</span><div class="cc-row__main"><div class="cc-row__title">Variables d'environnement injectées</div><div class="cc-row__meta">APP_ID, CC_COMMIT_ID, INSTANCE_TYPE… lues dans le panneau ci-contre</div></div></li>
-            <li class="cc-row"><span class="cc-badge cc-badge--ok">✓</span><div class="cc-row__main"><div class="cc-row__title">Health check OK</div><div class="cc-row__meta">Bascule sans interruption à chaque déploiement</div></div></li>
+            <li class="cc-row"><span class="cc-badge cc-badge--ok">✓</span><div class="cc-row__main"><div class="cc-row__title">Runtime FrankenPHP fourni</div><div class="cc-row__meta">Caddy et PHP dans un seul binaire, aucun Dockerfile à maintenir</div></div></li>
+            <li class="cc-row"><span class="cc-badge cc-badge--ok">✓</span><div class="cc-row__main"><div class="cc-row__title">Mode worker activé</div><div class="cc-row__meta"><span class="cc-kbd">CC_FRANKENPHP_WORKER</span> : le kernel Symfony reste en mémoire entre les requêtes</div></div></li>
+            <li class="cc-row"><span class="cc-badge cc-badge--ok">✓</span><div class="cc-row__main"><div class="cc-row__title">Hooks de build et de démarrage</div><div class="cc-row__meta">Les assets Swagger sont installés au build, les migrations jouées au démarrage</div></div></li>
+            <li class="cc-row"><span class="cc-badge cc-badge--ok">✓</span><div class="cc-row__main"><div class="cc-row__title">Health check sur /health</div><div class="cc-row__meta">Bascule sans interruption à chaque déploiement</div></div></li>
           </ul>
-          <pre class="cc-code"><span class="c"># .clever.json est committé : l'app est déjà liée</span>
-<span class="k">clever</span> deploy
-<span class="k">clever</span> logs</pre>
+          <pre class="cc-code"><span class="c"># Posé une seule fois sur l'application</span>
+<span class="k">clever</span> env set CC_WEBROOT <span class="s">public</span>
+<span class="k">clever</span> env set CC_FRANKENPHP_WORKER <span class="s">/public/index.php</span>
+
+<span class="c"># Ensuite, à chaque changement</span>
+<span class="k">git</span> push</pre>
           <div class="panel__actions">
             <a class="cc-btn cc-btn--sm cc-btn--gradient" href="https://console.clever-cloud.com" target="_blank" rel="noopener">Voir dans la Console <span class="cc-btn__arrow">→</span></a>
-            <a class="cc-btn cc-btn--sm" href="https://www.clever.cloud/developers/doc/applications/docker/" target="_blank" rel="noopener">Doc runtime Docker</a>
+            <a class="cc-btn cc-btn--sm" href="https://www.clever.cloud/developers/doc/applications/frankenphp/" target="_blank" rel="noopener">Doc runtime FrankenPHP</a>
           </div>
         </div>
 
@@ -220,8 +223,8 @@ frankenphp {
       <span class="cc-section__sub">Sans devops, sans serveur à gérer</span>
     </div>
     <div class="cc-grid cc-grid--3">
-      <div class="cc-card cc-card--accent cc-reveal" style="--i:14"><div class="cc-card__label">Déploiement</div><div class="cc-card__title cc-mt-1">git push → build Docker → run</div><p class="cc-card__hint">L'image est construite par la plateforme à chaque push, puis démarrée sans interruption de service.</p></div>
-      <div class="cc-card cc-card--accent cc-reveal" style="--i:15"><div class="cc-card__label">Runtime</div><div class="cc-card__title cc-mt-1">Docker ici, PHP natif si besoin</div><p class="cc-card__hint">FrankenPHP tourne dans son image ; le runtime PHP natif (Composer, PHP-FPM) reste disponible sans Dockerfile.</p></div>
+      <div class="cc-card cc-card--accent cc-reveal" style="--i:14"><div class="cc-card__label">Déploiement</div><div class="cc-card__title cc-mt-1">git push → composer install → run</div><p class="cc-card__hint">La plateforme installe les dépendances à chaque push, puis redémarre le worker sans interruption de service.</p></div>
+      <div class="cc-card cc-card--accent cc-reveal" style="--i:15"><div class="cc-card__label">Runtime</div><div class="cc-card__title cc-mt-1">FrankenPHP natif, sans Dockerfile</div><p class="cc-card__hint">Le binaire est fourni par la plateforme ; le runtime PHP classique (Apache, PHP-FPM) reste disponible pour une app plus traditionnelle.</p></div>
       <div class="cc-card cc-card--accent cc-reveal" style="--i:16"><div class="cc-card__label">Confiance</div><div class="cc-card__title cc-mt-1">Hébergé en France</div><p class="cc-card__hint">ISO 27001, HDS, hors de portée des lois extraterritoriales.</p></div>
     </div>
   </div>
