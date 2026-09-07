@@ -4,6 +4,7 @@ namespace App\Controller;
 
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\BinaryFileResponse;
+use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 
@@ -15,6 +16,15 @@ class MainController extends AbstractController
         return $this->render('homepage/index.html.twig', [
             'cc' => $this->platform(),
         ]);
+    }
+
+    /**
+     * Sonde de vie pour Clever Cloud (CC_HEALTH_CHECK_PATH=/health) : 200 sans toucher la base.
+     */
+    #[Route("/health", name: "health", methods: ['GET'])]
+    public function health(): JsonResponse
+    {
+        return new JsonResponse(['status' => 'ok']);
     }
 
     /**
