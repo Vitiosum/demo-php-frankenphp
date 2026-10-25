@@ -1,5 +1,8 @@
 twig:
     default_path: '%kernel.project_dir%/templates'
+    globals:
+        # Variables de démo (APP_ENV, ANNOUNCEMENT, LATENCY_BUDGET_MS, BURST_SIZE) et plateforme Clever Cloud
+        demo: '@App\Demo\DemoSettings'
 
 when@test:
     twig:
