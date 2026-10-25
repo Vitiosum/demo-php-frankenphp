@@ -16,7 +16,7 @@ Démo avant-vente Clever Cloud : Symfony 7.4 sur le **runtime FrankenPHP** (type
 ## Mode worker : ce que fait le code
 
 - `symfony/runtime` 7.4 détecte `$_SERVER['FRANKENPHP_WORKER']` et utilise `FrankenPhpWorkerRunner` (le paquet `runtime/frankenphp-symfony` a été retiré). Le worker se recycle après `FRANKENPHP_LOOP_MAX` requêtes (défaut 500, `0` = jamais ; valeur non entière = plantage au boot, c'est le runtime Symfony qui valide).
-- `src/Demo/WorkerStats.php` : propriétés statiques (id du worker, requêtes, démarrage) incrémentées par `WorkerRequestSubscriber` sur chaque requête principale. En worker elles persistent par thread ; en mode classique elles repartent de zéro. « Boots de Symfony » dans la rafale = réponses avec `request === 1`.
+- `src/Demo/WorkerStats.php` : propriétés statiques (id du worker, requêtes, démarrage) incrémentées par `WorkerRequestSubscriber` sur chaque requête principale. En worker elles persistent par thread ; en mode classique elles repartent de zéro. « Redémarrages de Symfony » dans la rafale = réponses avec `request === 1`.
 - Temps serveur = `microtime() - REQUEST_TIME_FLOAT` (inclut le boot hors worker), exposé dans `/worker` et l'en-tête `Server-Timing`.
 - Aucune promesse non implémentée : pas d'Early Hints 103, pas de Mercure.
 
@@ -35,7 +35,7 @@ Scénario : changer `ANNOUNCEMENT` ou `LATENCY_BUDGET_MS`, `clever restart`, rec
 
 ## Structure de page (accueil)
 
-topbar → bandeau `ANNOUNCEMENT` → premier écran (« Requête n° N. », pastille du worker, boutons « Envoyer N requêtes » / « Se certifier ↓ », rafale + 4 statistiques ; à droite panneau processus : mode, PID, uptime, requêtes / recyclage, mémoire, variables, variables injectées) → `partials/cert.html.twig` (Academy, badge animé, une seule inclusion par page) → benchmark k6 (barres) → API lecture seule → déploiement → footer.
+topbar → bandeau `ANNOUNCEMENT` → premier écran (« Requête n° N. », pastille du worker, boutons « Envoyer N requêtes » / « Se certifier ↓ », rafale au clic (échelle adaptative max(budget/4, p95×1,5), étiquette « budget N ms ↑ » si la ligne sort du cadre) + 4 statistiques ; à droite panneau processus : mode, PID, uptime, requêtes / recyclage, mémoire, variables, variables injectées) → `partials/cert.html.twig` (Academy, badge animé, une seule inclusion par page) → benchmark k6 (barres) → API lecture seule → déploiement → footer.
 
 ## Fichiers clés
 

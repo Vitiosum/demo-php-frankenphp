@@ -2,7 +2,7 @@
 :root {
   /* Une couleur par worker vu pendant la rafale (lisibles sur le navy) */
   --w0: #f57461; --w1: #b7b5ff; --w2: #5fe3d3; --w3: #ffd166; --w4: #ff8fb1; --w5: #9fd3ff;
-  --fp-grad-aa: linear-gradient(90deg, #d14836 0%, #cb1c42 50%, #a51050 100%);
+  --fp-grad-aa: linear-gradient(90deg, #cc4432 0%, #cb1c42 50%, #a51050 100%);
 }
 [hidden] { display: none !important; }
 body { display: flex; flex-direction: column; }
@@ -24,7 +24,7 @@ code { font-family: var(--cc-mono); font-size: 0.92em; }
 /* Premier écran */
 .fp-stage { display: grid; grid-template-columns: minmax(0, 1.3fr) minmax(0, 1fr); gap: clamp(20px, 3vw, 40px); align-items: stretch; padding-block: clamp(28px, 4.5vw, 52px) 32px; }
 .fp-title { margin: 0; font-size: clamp(40px, 6vw, 76px); font-weight: 800; letter-spacing: -0.04em; line-height: 0.98; }
-.fp-title__n { font-variant-numeric: tabular-nums; background: var(--cc-gradient); -webkit-background-clip: text; background-clip: text; color: transparent; }
+.fp-title__n { font-variant-numeric: tabular-nums; background: linear-gradient(90deg, #f57461, #cb1c42); -webkit-background-clip: text; background-clip: text; color: transparent; }
 .is-classic .fp-title__n { background: none; color: var(--cc-text); }
 .fp-sub { display: flex; flex-wrap: wrap; align-items: center; gap: 10px; margin: 16px 0 0; font-size: 16px; color: var(--cc-text-2); }
 .fp-chip { display: inline-flex; align-items: center; gap: 8px; font-family: var(--cc-mono); font-size: 12.5px; font-weight: 600; padding: 3px 10px; border-radius: 999px; color: var(--wc); border: 1px solid color-mix(in srgb, var(--wc) 55%, transparent); background: color-mix(in srgb, var(--wc) 12%, transparent); }
@@ -41,7 +41,7 @@ code { font-family: var(--cc-mono); font-size: 0.92em; }
 .fp-pulse__head code { color: var(--cc-text-2); }
 .fp-pulse__budget { font-family: var(--cc-mono); font-size: 12px; color: #ff9aab; }
 .fp-pulse__plot { position: relative; height: 112px; border-bottom: 1px solid var(--cc-border-strong); background: repeating-linear-gradient(0deg, transparent 0 27px, rgba(222, 221, 238, 0.05) 27px 28px); border-radius: 10px 10px 0 0; }
-.fp-pulse__line { position: absolute; left: 0; right: 0; bottom: 50%; border-top: 1px dashed rgba(255, 154, 171, 0.7); }
+.fp-pulse__line { position: absolute; left: 0; right: 0; bottom: 50%; z-index: 1; border-top: 1px dashed rgba(255, 154, 171, 0.7); }
 .fp-pulse__bars { position: absolute; inset: 6px 0 0; display: flex; align-items: flex-end; gap: 3px; }
 .fp-pulse__bars span { flex: 1 1 0; min-width: 2px; max-width: 22px; height: calc(var(--h) * 100%); border-radius: 3px 3px 1px 1px; background: var(--wc); transform-origin: bottom; animation: fp-rise 0.45s cubic-bezier(0.2, 0.8, 0.2, 1) both; }
 .fp-pulse__bars span.is-over { background: repeating-linear-gradient(135deg, #cb1c42 0 4px, #ff9aab 4px 7px); box-shadow: 0 0 12px rgba(203, 28, 66, 0.55); }
@@ -174,3 +174,16 @@ code { font-family: var(--cc-mono); font-size: 0.92em; }
 /* Titres de section sur deux lignes : interligne serré ; commandes jamais coupées */
 .fp-bench__intro h2, .fp-api h2, .fp-deploy h2 { line-height: 1.1; letter-spacing: -0.03em; }
 .cc-kbd { white-space: nowrap; }
+
+/* Revue du 2026-10-25 : rafale à la demande, échelle adaptative, panneau sans retour à la ligne */
+.fp-pulse__empty { position: absolute; inset: 0; display: grid; place-items: center; margin: 0; font-size: 13.5px; color: var(--cc-muted); }
+.fp-pulse__up { position: absolute; top: 4px; right: 6px; z-index: 1; font-family: var(--cc-mono); font-size: 11.5px; color: #ff9aab; background: rgba(14, 17, 36, 0.7); padding: 1px 6px; border-radius: 6px; }
+.fp-pulse__stats dd.is-ok { color: #5fe3d3; }
+.fp-proc__vars dd { white-space: nowrap; overflow: hidden; text-overflow: ellipsis; overflow-wrap: normal; }
+.fp-proc__vars > div { min-width: 0; }
+/* Lien certification du pied de page : texte plein (contraste), pas de texte en dégradé */
+.cc-footer li a.is-cert { color: var(--cc-orange); background: none; -webkit-background-clip: initial; background-clip: initial; }
+.fp-pulse__stats div { display: flex; flex-direction: column; }
+.fp-pulse__stats dd { margin-top: auto; }
+@media (max-width: 1280px) { .cc-topbar__nav .cc-pill--mono { display: none; } }
+.cc-topbar__inner { gap: 12px; } .cc-topbar__nav { gap: 6px; }

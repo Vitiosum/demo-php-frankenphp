@@ -35,14 +35,16 @@
           <span class="fp-pulse__budget">budget {{ demo.latencyBudgetMs }} ms</span>
         </figcaption>
         <div class="fp-pulse__plot" role="img" id="fp-plot" aria-label="Aucune rafale envoyée pour l'instant">
-          <i class="fp-pulse__line" aria-hidden="true"></i>
+          <i class="fp-pulse__line" id="fp-line" aria-hidden="true" hidden></i>
+          <span class="fp-pulse__up" id="fp-up" hidden>budget {{ demo.latencyBudgetMs }} ms ↑</span>
+          <p class="fp-pulse__empty" id="fp-empty">Aucune rafale envoyée.</p>
           <div class="fp-pulse__bars" id="fp-bars"></div>
         </div>
-        <dl class="fp-pulse__stats" id="fp-stats" aria-live="polite">
+        <dl class="fp-pulse__stats" id="fp-stats" aria-live="polite" aria-atomic="true">
           <div><dt>Médiane</dt><dd data-k="median">—</dd></div>
           <div><dt>Sous {{ demo.latencyBudgetMs }} ms</dt><dd data-k="under">—</dd></div>
           <div><dt>Workers vus</dt><dd data-k="workers">—</dd></div>
-          <div><dt>Boots de Symfony</dt><dd data-k="boots">—</dd></div>
+          <div><dt>Redémarrages de Symfony</dt><dd data-k="boots">—</dd></div>
         </dl>
         <div class="fp-pulse__legend" id="fp-legend"></div>
       </figure>
@@ -55,6 +57,7 @@
         <div><dt>Worker · PID</dt><dd>{{ w.worker }} · {{ w.pid }}</dd></div>
         <div><dt>En mémoire depuis</dt><dd id="fp-uptime">{{ w.uptime }}</dd></div>
         <div><dt>Requêtes servies</dt><dd><span id="fp-served">{{ w.request|number_format(0, ',', ' ') }}</span>{% if isWorker and w.loop_max > 0 %} / {{ w.loop_max }}{% endif %}</dd></div>
+        <div><dt>FRANKENPHP_LOOP_MAX</dt><dd>{{ w.loop_max > 0 ? w.loop_max ~ ' requêtes' : 'jamais recyclé' }}</dd></div>
         <div><dt>Mémoire PHP</dt><dd>{{ w.memory_mb|number_format(1, ',', ' ') }} Mo</dd></div>
         <div><dt>Cette page</dt><dd>{{ w.server_ms|number_format(1, ',', ' ') }} ms serveur</dd></div>
       </dl>
@@ -71,13 +74,12 @@
         <li><span>LATENCY_BUDGET_MS</span><b>{{ demo.latencyBudgetMs }}</b></li>
         <li><span>BURST_SIZE</span><b>{{ demo.burstSize }}</b></li>
         <li><span>ANNOUNCEMENT</span>{% if demo.announcement is empty %}<b class="is-empty">non définie</b>{% else %}<b>définie</b>{% endif %}</li>
-        <li><span>FRANKENPHP_LOOP_MAX</span><b>{{ w.loop_max > 0 ? w.loop_max : 'jamais' }}</b></li>
       </ul>
       <dl class="fp-proc__vars">
-        <div><dt>Instance</dt><dd class="{{ demo.platform.instance is null ? 'is-empty' }}">{{ demo.platform.instance ?? na }}</dd></div>
-        <div><dt>Type d'instance</dt><dd class="{{ demo.platform.type is null ? 'is-empty' }}">{{ demo.platform.type ?? na }}</dd></div>
-        <div><dt>Commit déployé</dt><dd class="{{ demo.platform.commit is null ? 'is-empty' }}">{{ demo.platform.commit ?? na }}</dd></div>
-        <div><dt>Déploiement</dt><dd class="{{ demo.platform.deployment is null ? 'is-empty' }}">{{ demo.platform.deployment ?? na }}</dd></div>
+        <div><dt>Instance</dt><dd class="{{ demo.platform.instance is null ? 'is-empty' }}" title="{{ demo.platform.instance ?? na }}">{{ demo.platform.instance ?? na }}</dd></div>
+        <div><dt>Type d'instance</dt><dd class="{{ demo.platform.type is null ? 'is-empty' }}" title="{{ demo.platform.type ?? na }}">{{ demo.platform.type ?? na }}</dd></div>
+        <div><dt>Commit déployé</dt><dd class="{{ demo.platform.commit is null ? 'is-empty' }}" title="{{ demo.platform.commit ?? na }}">{{ demo.platform.commit ?? na }}</dd></div>
+        <div><dt>Déploiement</dt><dd class="{{ demo.platform.deployment is null ? 'is-empty' }}" title="{{ demo.platform.deployment ?? na }}">{{ demo.platform.deployment ?? na }}</dd></div>
       </dl>
     </aside>
   </section>
@@ -174,6 +176,9 @@
   var count = document.getElementById('fp-count');
   var served = document.getElementById('fp-served');
   var recycle = document.getElementById('fp-recycle');
+  var line = document.getElementById('fp-line');
+  var up = document.getElementById('fp-up');
+  var empty = document.getElementById('fp-empty');
   var size = parseInt(fig.dataset.burst, 10) || 40;
   var budget = parseInt(fig.dataset.budget, 10) || 10;
   var pageWorker = fig.dataset.pageWorker;
@@ -187,10 +192,18 @@
     var colors = {}, order = [];
     if (fig.dataset.mode === 'worker') { colors[pageWorker] = 0; order.push(pageWorker); }
     results.forEach(function (r) { if (!(r.worker in colors)) { colors[r.worker] = order.length; order.push(r.worker); } });
+    var sorted = results.map(function (r) { return r.server_ms; }).sort(function (a, b) { return a - b; });
+    var p95 = sorted.length ? sorted[Math.min(sorted.length - 1, Math.ceil(sorted.length * 0.95) - 1)] : 0;
+    var top = Math.max(budget / 4, p95 * 1.5);
+    var lineAt = budget / top;
+    line.hidden = lineAt > 1;
+    line.style.bottom = (Math.min(lineAt, 1) * 100) + '%';
+    up.hidden = lineAt <= 1;
+    empty.hidden = true;
     bars.textContent = '';
     results.forEach(function (r, i) {
       var b = document.createElement('span');
-      var h = Math.min(r.server_ms / (budget * 2), 1);
+      var h = Math.min(r.server_ms / top, 1);
       b.style.setProperty('--h', Math.max(h, 0.03).toFixed(3));
       b.style.setProperty('--n', i);
       b.style.setProperty('--wc', 'var(--w' + (colors[r.worker] % 6) + ')');
@@ -206,8 +219,9 @@
     set('median', fr.format(median) + ' ms');
     set('under', under + ' / ' + results.length);
     set('workers', seen.length);
-    set('boots', boots);
-    plot.setAttribute('aria-label', results.length + ' requêtes, médiane ' + fr.format(median) + ' ms, ' + under + ' sous le budget de ' + budget + ' ms, ' + seen.length + ' workers, ' + boots + ' boots de Symfony');
+    set('boots', boots === 0 ? '0 ✓' : boots);
+    stats.querySelector('[data-k="boots"]').classList.toggle('is-ok', boots === 0);
+    plot.setAttribute('aria-label', results.length + ' requêtes, médiane ' + fr.format(median) + ' ms, ' + under + ' sous le budget de ' + budget + ' ms, ' + seen.length + ' workers, ' + boots + ' redémarrages de Symfony');
     legend.textContent = '';
     if (seen.length <= 6) {
       seen.forEach(function (id) {
@@ -263,7 +277,6 @@
   }
 
   btn.addEventListener('click', fire);
-  setTimeout(fire, 350);
 })();
 </script>
 {% endblock %}

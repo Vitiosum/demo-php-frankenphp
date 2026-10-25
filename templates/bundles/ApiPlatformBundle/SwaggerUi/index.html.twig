@@ -1,0 +1,7 @@
+{# Surcharge minimale : favicon vide (évite un 404 sur /favicon.ico). Le <html lang> du gabarit d'API Platform est hors bloc, il n'est pas modifiable sans copier tout le gabarit. #}
+{% extends '@!ApiPlatform/SwaggerUi/index.html.twig' %}
+
+{% block head_metas %}
+    {{ parent() }}
+    <link rel="icon" href="data:,">
+{% endblock %}

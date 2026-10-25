@@ -57,11 +57,11 @@ Valeur invalide ou hors bornes : défaut. Affichées aussi : `FRANKENPHP_LOOP_MA
 
 ### Scénario vidéo
 
-1. Ouvrir l'app : « Requête n° N. », pastille `worker 3f9ac1`, la rafale part seule : médiane ~1-2 ms, **0 boot de Symfony**, 2 à 4 workers vus.
+1. Ouvrir l'app : « Requête n° N. », pastille `worker 3f9ac1`, cliquer « Envoyer 40 requêtes » (pas de rafale automatique) : médiane ~1-2 ms, **0 redémarrage de Symfony**, 2 à 4 workers vus.
 2. Recharger : le numéro monte, l'uptime aussi. Cliquer « Envoyer 40 requêtes » : le compteur grimpe en direct.
 3. Console → Variables : `ANNOUNCEMENT=Maintenance ce soir à 22 h`, `LATENCY_BUDGET_MS=1`, `clever restart`, recharger : bandeau, budget plus strict (barres rouges). Le compteur repart de zéro : nouveaux processus.
-4. Option : `FRANKENPHP_LOOP_MAX=10` puis rafale de 40 → un worker se recycle en pleine rafale (nouvelle couleur, « Boots de Symfony » > 0).
-5. Contraste : retirer `CC_FRANKENPHP_WORKER` + restart → « sans worker », 40 scripts différents, 40 boots.
+4. Option : `FRANKENPHP_LOOP_MAX=10` puis rafale de 40 → un worker se recycle en pleine rafale (nouvelle couleur, « Redémarrages de Symfony » > 0).
+5. Contraste : retirer `CC_FRANKENPHP_WORKER` + restart → « sans worker », 40 scripts différents, 40 redémarrages.
 6. Descendre au bloc certification, puis au benchmark k6.
 
 ---
@@ -97,7 +97,7 @@ APP_ENV=production ANNOUNCEMENT="Test" LATENCY_BUDGET_MS=10 BURST_SIZE=40 php -S
 php bin/console lint:twig templates && php bin/console lint:container && composer audit
 ```
 
-Sous `php -S`, **le mode worker n'est pas reproduit** : chaque requête est un nouveau script (« Requête n° 1. », « sans worker », 40 boots dans la rafale). C'est aussi le contraste utile pour la vidéo. Pour le mode worker en local : `frankenphp run` (Caddyfile committé, non utilisé par Clever Cloud). Sous `php -S`, `$_SERVER` ne contient pas l'environnement : Symfony garde `APP_ENV` de `.env`, la pastille lit la vraie variable.
+Sous `php -S`, **le mode worker n'est pas reproduit** : chaque requête est un nouveau script (« Requête n° 1. », « sans worker », 40 redémarrages dans la rafale). C'est aussi le contraste utile pour la vidéo. Pour le mode worker en local : `frankenphp run` (Caddyfile committé, non utilisé par Clever Cloud). Sous `php -S`, `$_SERVER` ne contient pas l'environnement : Symfony garde `APP_ENV` de `.env`, la pastille lit la vraie variable.
 
 ---
 
