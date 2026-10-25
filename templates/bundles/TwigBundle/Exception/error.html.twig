@@ -1,0 +1,16 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Erreur {{ status_code }} · Démo Clever Cloud{% endblock %}
+
+{% block body %}
+<div class="cc-container">
+  <section class="fp-error">
+    <h1>{{ status_code }}.</h1>
+    <p>{{ status_code == 404 ? "Cette page n'existe pas. Le worker, lui, tourne toujours." : "Le serveur n'a pas pu répondre à cette requête." }}</p>
+    <div class="fp-cta">
+      <a class="cc-btn cc-btn--gradient" href="/">Retour au worker</a>
+      <a class="cc-btn" href="https://academy.clever.cloud/" target="_blank" rel="noopener">Se certifier Clever Cloud ↗</a>
+    </div>
+  </section>
+</div>
+{% endblock %}
