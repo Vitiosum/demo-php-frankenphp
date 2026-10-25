@@ -5,11 +5,10 @@
         "php": ">=8.2",
         "ext-ctype": "*",
         "ext-iconv": "*",
-        "api-platform/core": "^3.2.1",
+        "api-platform/core": "^4.4",
         "doctrine/doctrine-bundle": "^2.10.2",
         "doctrine/doctrine-migrations-bundle": "^3.2.4",
         "doctrine/orm": "^3.0.1",
-        "runtime/frankenphp-symfony": "^0.2.0",
         "symfony/asset": "^7.0.0",
         "symfony/console": "^7.0.0",
         "symfony/dotenv": "^7.0.0",
@@ -78,7 +77,10 @@
             "docker": false
         },
         "runtime": {
-            "class": "Runtime\\FrankenPhpSymfony\\Runtime"
+            "prod_envs": [
+                "prod",
+                "production"
+            ]
         }
     },
     "require-dev": {
