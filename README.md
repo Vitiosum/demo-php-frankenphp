@@ -113,3 +113,9 @@ Sous `php -S`, **le mode worker n'est pas reproduit** : chaque requête est un n
 PHP 8.5 (runtime FrankenPHP), Symfony 7.4 LTS, API Platform 4.4, Doctrine ORM 3.7 / DBAL 4.5, SQLite, Twig 3.30, Clever Brand Kit (`public/cc-brand.css`, ne pas modifier ; styles propres dans `public/demo.css`).
 
 `Caddyfile`, `benchmark.Caddyfile` et `static-build.Dockerfile` ne servent pas sur Clever Cloud (local, k6, binaire statique optionnel).
+
+## Security
+
+- Root `php.ini` with `expose_php = Off` (loaded automatically by FrankenPHP on Clever Cloud): no `X-Powered-By` header.
+- Strict CSP (`script-src 'self'`) on demo pages, plus `nosniff`, `Referrer-Policy`, `X-Frame-Options` (`src/EventSubscriber/SecurityHeadersSubscriber.php`); no CSP on `/api` (Swagger UI) and `/benchmark/…` (k6 reports). Page script lives in `public/demo.js`: do not add inline scripts.
+

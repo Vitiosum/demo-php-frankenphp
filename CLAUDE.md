@@ -79,3 +79,12 @@ clever deploy     # déploie main sur Clever Cloud
 Pas de liaison GitHub → Clever Cloud (`clever create --github` refusé par l'API, « wrong oauth application data » ; intégration GitHub du compte à reconnecter dans la Console) : un `git push` ne redéploie pas.
 
 `.clever.json` : suivi par git, vide dans le dépôt ; `clever link`/`clever create` le réécrivent localement. Ne jamais committer la version liée : toujours `git add` fichier par fichier.
+
+## 🔒 Sécurité (vérifié en production le 2026-10-25)
+
+- `php.ini` à la racine : `expose_php = Off`. La doc Clever FrankenPHP : « put a php.ini file at the root of your project. FrankenPHP will automatically use it. » → plus d'en-tête `X-Powered-By: PHP/x.y.z`. (En local, `php -S` ne lit pas ce fichier : l'en-tête y reste visible, c'est normal.)
+- `src/EventSubscriber/SecurityHeadersSubscriber.php` : `X-Content-Type-Options`, `Referrer-Policy`, `X-Frame-Options` partout, et une CSP stricte (`script-src 'self'`, sans `unsafe-inline`) sur les pages de la démo. Pas de CSP sur `/api` (Swagger UI) ni `/benchmark/…` (rapports k6), qui embarquent des scripts inline générés.
+- Le script de la page est dans `public/demo.js` : n'ajoutez pas de `<script>` inline dans les gabarits, la CSP le bloquerait.
+- `Server: FrankenPHP Caddy` reste (sans numéro de version) : le retirer imposerait un `CC_RUN_COMMAND` avec un Caddyfile personnalisé, au risque de casser le mode worker.
+- Aucun fichier sensible servi (`.env`, `.git`, `composer.*`, `var/`, `vendor/` en 404) ; API Monster en lecture seule (POST/DELETE → 405).
+
