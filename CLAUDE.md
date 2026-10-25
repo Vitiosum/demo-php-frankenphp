@@ -2,11 +2,11 @@
 
 ## Contexte
 
-Démo avant-vente Clever Cloud : Symfony 7.4 sur le **runtime FrankenPHP** (type `frankenphp`, pas Docker), en **mode worker**. Le sujet de la page est le worker lui-même : nombre de requêtes servies par le même processus PHP, rafale mesurée vers `/worker`, comparaison k6 committée. Aucune application en service : la procédure du README vaut pour une app à créer.
+Démo avant-vente Clever Cloud : Symfony 7.4 sur le **runtime FrankenPHP** (type `frankenphp`, pas Docker), en **mode worker**. Le sujet de la page est le worker lui-même : nombre de requêtes servies par le même processus PHP, rafale mesurée vers `/worker`, comparaison k6 committée. Application en service du 2026-10-25 au 2026-11-05 (suppression planifiée après le tournage vidéo du 2026-11-04) : `app_70bdf1d1-2f99-47fd-b180-193ce83fed79`, https://app-70bdf1d1-2f99-47fd-b180-193ce83fed79.cleverapps.io/ ; après cette date, recréer avec la procédure du README.
 
 ## Déploiement Clever Cloud
 
-- Type : `clever create -t frankenphp`, flavor nano (build sur instance dédiée automatique pour nano/pico), 1 à 2 instances possibles (données en lecture seule).
+- Type : `clever create -t frankenphp`, flavor nano (build dédié non automatique : posé explicitement en M avec `clever scale --build-flavor M`, à conserver), 1 à 2 instances possibles (données en lecture seule).
 - Add-on : **aucun**. SQLite `var/data.db`, recréé par `CC_PRE_RUN_HOOK` à chaque démarrage ; pas de PostgreSQL, donc pas de `reset-demo.sh` (un `clever restart` suffit).
 - Variables obligatoires : `APP_SECRET`, `APP_ENV=prod`, `APP_DEBUG=0`, `CC_WEBROOT=public`, `CC_FRANKENPHP_WORKER=/public/index.php`, `CC_POST_BUILD_HOOK="php bin/console assets:install public --no-interaction && php bin/console cache:warmup"`, `CC_PRE_RUN_HOOK="php bin/console doctrine:migrations:migrate --no-interaction --allow-no-migration"`.
 - Recommandées : `CC_HEALTH_CHECK_PATH=/health`, `CC_CACHE_DEPENDENCIES=true`. Citations de la doc dans le README.
@@ -72,5 +72,10 @@ scripts/smoke.sh                       13 vérifications de routes : ./scripts/s
 ```bash
 git add <fichiers>
 git commit -m "description"
-git push
+git push          # sauvegarde GitHub uniquement
+clever deploy     # déploie main sur Clever Cloud
 ```
+
+Pas de liaison GitHub → Clever Cloud (`clever create --github` refusé par l'API, « wrong oauth application data » ; intégration GitHub du compte à reconnecter dans la Console) : un `git push` ne redéploie pas.
+
+`.clever.json` : suivi par git, vide dans le dépôt ; `clever link`/`clever create` le réécrivent localement. Ne jamais committer la version liée : toujours `git add` fichier par fichier.

@@ -8,8 +8,9 @@ Une application Symfony 7.4 servie par le **runtime FrankenPHP** de Clever Cloud
 
 ```bash
 clever create -t frankenphp demo-php-frankenphp
-clever link <app_id>      # .clever.json est committé vide
+clever link <app_id>      # voir la note sur .clever.json ci-dessous
 clever scale --flavor nano
+clever scale --build-flavor M    # build dédié posé explicitement (recommandé en nano)
 
 clever env set APP_SECRET "$(php -r 'echo bin2hex(random_bytes(32));')"
 clever env set APP_ENV prod
@@ -23,6 +24,12 @@ clever env set CC_CACHE_DEPENDENCIES true
 
 clever deploy
 ```
+
+Application en service du 2026-10-25 au 2026-11-05 (suppression planifiée après le tournage vidéo du 2026-11-04) : `app_70bdf1d1-2f99-47fd-b180-193ce83fed79`, https://app-70bdf1d1-2f99-47fd-b180-193ce83fed79.cleverapps.io/. Après cette date, recréer avec la procédure ci-dessus.
+
+Déployer une modification : `git push` (sauvegarde GitHub) puis `clever deploy`. Pas de liaison GitHub → Clever Cloud (`clever create --github` refusé par l'API, « wrong oauth application data ») : un `git push` seul ne redéploie pas.
+
+`.clever.json` est suivi par git, vide dans le dépôt ; `clever link` / `clever create` le réécrivent localement avec l'ID de l'app. Ne jamais committer la version liée (`git add README.md ...` fichier par fichier, pas `git add .`).
 
 Aucun add-on : les données sont dans SQLite (`var/data.db`), recréé à chaque démarrage par `CC_PRE_RUN_HOOK` (voir *Données*).
 
