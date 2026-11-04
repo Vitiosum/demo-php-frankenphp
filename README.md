@@ -1,10 +1,10 @@
-# Request No. N — Symfony in FrankenPHP worker mode on Clever Cloud
+# The Ever-Lit Forge — Symfony in FrankenPHP worker mode on Clever Cloud
 
-> The first screen counts: "Requête n° 214." is the number of requests the PHP worker that answers you has already served. A Symfony 7.4 app on the **FrankenPHP runtime** of Clever Cloud, without a Dockerfile, in **worker mode**: one variable, `CC_FRANKENPHP_WORKER`, keeps the Symfony kernel in memory between requests instead of booting it for each one. A button fires 40 requests at `/worker` and draws the server time of each, coloured by worker, with the number of Symfony restarts. Below: k6 measurements of the same page served three ways, and a read-only API Platform API on SQLite. No add-on.
+> In classic PHP, the furnace is relit for every piece; in worker mode, the fire never goes out. A Symfony 7.4 app on the **FrankenPHP runtime** of Clever Cloud, without a Dockerfile, in **worker mode**: one variable, `CC_FRANKENPHP_WORKER`, keeps the Symfony kernel in memory between requests instead of booting it for each one. The page is a blacksmith's forge drawn in SVG. "Requête n° 214." is stamped in hot metal: the real number of requests the PHP worker answering you has already served. The hearth lights one more coal each time that number doubles. A button fires 40 requests at `/worker`: the hammer strikes, one spark flies per response, and each one lands in a measured spark chart (server time, worker, Symfony restarts). Below: the Clever Cloud Academy hallmark, k6 measurements of the same page served three ways, drawn as iron bars, and a read-only API Platform API on SQLite whose monsters hang on the smith's display rack. No add-on.
 
-![The first screen served locally by php -S, so in classic mode, not worker mode: "Requête n° 1.", the "sans worker" chip, the burst chart before a burst and the process panel with the demo variables](docs/screenshot-desktop.png)
+![The forge run locally with php -S, so in classic mode, not worker mode: "Requête n° 1.", the "sans worker" chip, a single lit coal in the hearth, the hammer striking during a burst with sparks flying from the anvil, the spark chart of the 40 requests with a relit-furnace flame under each one (40 Symfony restarts), and the process plate](docs/screenshot-desktop.png)
 
-<img src="docs/screenshot-phone.png" alt="The same first screen on a phone, served locally by php -S (classic mode, not worker mode)" width="300">
+<img src="docs/screenshot-phone.png" alt="The same first screen on a phone, run locally with php -S (classic mode, not worker mode): the request number, the forge and sparks flying from the anvil during a burst" width="300">
 
 **Run it yourself.** The hosted demo was taken down after the presales review (November 2026). The steps in [Deploy on Clever Cloud](#deploy-on-clever-cloud) recreate it from scratch in about 5 minutes.
 
@@ -12,15 +12,18 @@
 
 | Where | Feature | What you see |
 |---|---|---|
-| First screen | `CC_FRANKENPHP_WORKER=/public/index.php`: `symfony/runtime` 7.4 detects `FRANKENPHP_WORKER` and serves requests in a loop with its `FrankenPhpWorkerRunner` | "Requête n° N." grows on each reload, the `worker 3f9ac1` chip, "Même processus PHP depuis …" |
-| "Envoyer 40 requêtes" | 40 calls to `/worker`, four at a time, each returning the state of the worker that served it | One bar per request (server time), one colour per worker, a dotted budget line; median, requests under budget, workers seen, Symfony restarts (responses with `request === 1`). On the hosted app: median about 1–2 ms, **0 Symfony restarts**, 2 to 4 workers seen |
-| Process panel | `src/Demo/WorkerStats.php`: static properties, which survive between requests only in worker mode | Mode, worker id and PID, time in memory, requests served, PHP memory, this page's server time |
-| Recycling | `FRANKENPHP_LOOP_MAX` (default 500, `0` = never) | "Recyclé dans N requêtes"; with `FRANKENPHP_LOOP_MAX=10`, a worker recycles in the middle of a burst (new colour, restarts > 0) |
-| Without the worker | Remove `CC_FRANKENPHP_WORKER`, then `clever restart` | "sans worker" chip, 40 different PHP scripts and 40 Symfony restarts in the burst |
+| The stamped number | `CC_FRANKENPHP_WORKER=/public/index.php`: `symfony/runtime` 7.4 detects `FRANKENPHP_WORKER` and serves requests in a loop with its `FrankenPhpWorkerRunner` | "Requête n° N." in hot metal grows on each reload, the `worker 3f9ac1` chip, "Le feu brûle depuis …" |
+| The hearth | `src/Demo/WorkerStats.php`: static properties, which survive between requests only in worker mode | 12 coals, one more lit each time the worker doubles its request count (1, 2, 4… 2048), and the flames grow with them. Without the worker: one coal, a small fresh fire |
+| "Envoyer 40 requêtes" | 40 calls to `/worker`, four at a time, each returning the state of the worker that served it | The hammer strikes and one spark per response flies off the anvil, in the colour of the worker that served it. The spark chart ("La gerbe") draws one spark per request: height = server time, colour = worker, a dotted budget line, a small flame under the baseline when Symfony booted for that request. Below: median, requests under budget, workers seen, "Fours rallumés" (Symfony restarts, responses with `request === 1`). On the hosted app: median about 1–2 ms, **0 Symfony restarts**, 2 to 4 workers seen |
+| "Le feu qui vous répond" plate | Same static properties | Mode, worker id and PID, time in memory, requests served, PHP memory, this page's server time |
+| Recycling | `FRANKENPHP_LOOP_MAX` (default 500, `0` = never) | "Four rallumé dans N requêtes"; with `FRANKENPHP_LOOP_MAX=10`, a worker recycles in the middle of a burst (new colour, flames under the baseline, restarts > 0) |
+| Without the worker | Remove `CC_FRANKENPHP_WORKER`, then `clever restart` | "sans worker" chip, one coal, 40 different PHP scripts and 40 relit furnaces in the burst |
 | Every response | `Server-Timing: app;dur=…` | PHP time since the request arrived, including the Symfony boot outside worker mode |
-| Benchmark section | k6 reports committed in `benchmark/` | p95 latency of the home page, 100 virtual users, 3,000 requests, 0 failures, measured locally (`https://localhost`, HTTP/2): FrankenPHP classic 22.44 ms, PHP-FPM 15.97 ms, FrankenPHP worker 6.66 ms. They compare the execution modes, not Clever Cloud |
+| "Réglages de la forge" and "Running on Clever Cloud" plates | `src/Demo/DemoSettings.php` | The four demo variables and what each one changes; the variables injected by Clever Cloud ("Local" outside the platform) |
+| Benchmark section | k6 reports committed in `benchmark/` | Three iron bars, only the worker one glowing: p95 latency of the home page, 100 virtual users, 3,000 requests, 0 failures, measured locally (`https://localhost`, HTTP/2): FrankenPHP classic 22.44 ms, PHP-FPM 15.97 ms, FrankenPHP worker 6.66 ms. They compare the execution modes, not Clever Cloud |
+| The display rack | API Platform resource with `Get` and `GetCollection` only | The 7 monsters hang as forged pieces, each one a link to `/api/monsters/{id}` |
 
-To show it live: reload (the number and the uptime climb), fire a burst, then change a demo variable and restart; the counter starts again from zero, on new processes.
+To show it live: reload (the number and the uptime climb, a coal lights up each time the count doubles), fire a burst (sparks fly from the anvil), then change a demo variable and restart; the counter starts again from zero, on new processes: the forge has been relit.
 
 ```bash
 clever env set ANNOUNCEMENT "Maintenance tonight at 10 pm"
@@ -65,7 +68,7 @@ No add-on: the data lives in SQLite (`var/data.db`). The pre-run hook replays th
 | Variable | Set by | Role |
 |---|---|---|
 | `APP_SECRET` | you, generated (`openssl rand -hex 32`) | Symfony secret. `.env` only holds a placeholder |
-| `APP_ENV` | you | `prod`. Also the environment chip of the process panel (Clever gradient for `prod` or `production`). `production` or an unknown value starts Symfony in `prod` without debug (`src/Kernel.php`) |
+| `APP_ENV` | you | `prod`. Also the environment chip of the process plate (Clever gradient for `prod` or `production`). `production` or an unknown value starts Symfony in `prod` without debug (`src/Kernel.php`) |
 | `APP_DEBUG` | you | `0` |
 | `CC_WEBROOT` | you | `public`, Symfony's web root. "If you need to serve files from a specific directory, set the CC_WEBROOT environment variable" ([FrankenPHP runtime](https://www.clever.cloud/developers/doc/deploy/applications/frankenphp/)) |
 | `CC_FRANKENPHP_WORKER` | you | `/public/index.php`: turns worker mode on. The path is "relative to the root of your project", and "The worker script must be located within the webroot directory" |
@@ -74,7 +77,7 @@ No add-on: the data lives in SQLite (`var/data.db`). The pre-run hook replays th
 | `CC_HEALTH_CHECK_PATH` | you | `/health`: traffic switches only when the app answers 200. "If these paths don't return a 2xx response code, the deployment fails" |
 | `CC_CACHE_DEPENDENCIES` | you | `true`: "Enable caching of your build dependencies to speed up following builds." (default `false`) |
 | `ANNOUNCEMENT` | you, optional | Banner at the top of every page (160 characters max, escaped). Empty by default |
-| `LATENCY_BUDGET_MS` | you, optional | `10` by default (1 to 10,000): dotted line of the burst, red hatched bars above it, "Sous N ms" counter |
+| `LATENCY_BUDGET_MS` | you, optional | `10` by default (1 to 10,000): dotted line of the spark chart, hollow red sparks above it, "Sous N ms" counter |
 | `BURST_SIZE` | you, optional | `40` by default (5 to 200): number of requests in the burst |
 | `FRANKENPHP_LOOP_MAX` | you, optional | Worker recycling, default 500, `0` = never. **A non-integer value makes the Symfony runtime crash at startup** |
 
@@ -85,13 +88,13 @@ Do not set:
 - `CC_PHP_COMPOSER_FLAGS`: the default `-n --no-dev --no-progress --no-scripts` fits; `--optimize-autoloader` comes from `config.optimize-autoloader: true` in `composer.json`. Since `--no-scripts` skips Symfony's auto-scripts, the build hook runs `assets:install` and the cache warm-up.
 - `CC_DISABLE_BUILD_CACHE_UPLOAD`: "Don't use it with nano and pico plans".
 
-The process panel also shows `CC_APP_NAME`, `INSTANCE_NUMBER`, `CC_PRETTY_INSTANCE_NAME`, `INSTANCE_TYPE`, `CC_COMMIT_ID` and `CC_DEPLOYMENT_ID`; `APP_ID` turns the top pill into "Live on Clever Cloud". Locally they read "injecté au déploiement".
+The "Running on Clever Cloud" plate shows `CC_APP_NAME`, `APP_ID`, `INSTANCE_NUMBER` (with `CC_PRETTY_INSTANCE_NAME`), `INSTANCE_TYPE`, `CC_COMMIT_ID` (short) and `CC_DEPLOYMENT_ID`, and nothing else; `APP_ID` also turns the top pill into "Live on Clever Cloud". Locally the plate reads "Local" and each value "injecté au déploiement".
 
 ## Routes
 
 | Route | What it does |
 |---|---|
-| `GET /` | First screen (title, burst, process panel and variables), Clever Cloud Academy block, k6 benchmark, API, deployment |
+| `GET /` | The forge (stamped number, hearth, spark chart, process plate), settings and Clever Cloud plates, Clever Cloud Academy block, k6 benchmark, API display rack, deployment |
 | `GET /worker` | JSON state of the worker that served the request (`mode`, `worker`, `request`, `uptime_s`, `memory_mb`, `server_ms`, `recycle_in`…), `Cache-Control: no-store` |
 | `GET /health` | `{"status":"ok"}`, without touching the database |
 | `GET /api`, `/api/monsters`, `/api/monsters/{id}` | API Platform 4.4 and its Swagger UI, read-only: any write answers 405 |
@@ -111,8 +114,9 @@ src/Controller/MainController.php   /, /worker, /health, /benchmark/{name}, /dow
 src/Entity/Monster.php              API Platform resource, Get and GetCollection only
 migrations/                         SQLite schema and the 7 monsters
 templates/                          home page, Academy block, error page, Swagger UI override
-public/demo.js                      the burst and its chart (no inline script: strict CSP)
-public/demo.css                     demo styles; public/cc-brand.css is the Clever Brand Kit, not to be edited
+templates/partials/forge.svg.twig   the forge in SVG: 12 coals lit from the worker's real request count
+public/demo.js                      the burst: spark chart, hammer, sparks and coals (no inline script: strict CSP)
+public/demo.css                     forge styles, re-tints the Brand Kit tokens; public/cc-brand.css is the Clever Brand Kit, not to be edited
 benchmark/                          k6 script and the six committed reports
 scripts/smoke.sh                    13 route checks: ./scripts/smoke.sh [URL]
 php.ini                             expose_php = Off, read by FrankenPHP from the project root
@@ -131,7 +135,7 @@ APP_ENV=production ANNOUNCEMENT="Test" LATENCY_BUDGET_MS=10 BURST_SIZE=40 php -S
 php bin/console lint:twig templates && php bin/console lint:container && composer audit
 ```
 
-Under `php -S`, **worker mode is not reproduced**: each request is a new script ("Requête n° 1.", "sans worker", 40 restarts in the burst), which is also the useful contrast. For worker mode locally: `frankenphp run` (the committed `Caddyfile`). Under `php -S`, `$_SERVER` does not contain the environment: Symfony keeps `APP_ENV` from `.env`, while the chip reads the real variable.
+Under `php -S`, **worker mode is not reproduced**: each request is a new script ("Requête n° 1.", "sans worker", a single coal, 40 relit furnaces in the burst), which is also the useful contrast. The screenshots above were taken that way. For worker mode locally: `frankenphp run` (the committed `Caddyfile`). Under `php -S`, `$_SERVER` does not contain the environment: Symfony keeps `APP_ENV` from `.env`, while the chip reads the real variable.
 
 ## Security
 

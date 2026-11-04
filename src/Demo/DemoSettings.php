@@ -31,6 +31,7 @@ final class DemoSettings
         $deployment = self::get('CC_DEPLOYMENT_ID');
         $this->platform = [
             'app' => self::get('CC_APP_NAME'),
+            'id' => self::get('APP_ID'),
             'instance' => null === $number ? null : '#'.$number.(null === $pretty ? '' : ' · '.$pretty),
             'type' => self::get('INSTANCE_TYPE'),
             'commit' => null === $commit ? null : substr($commit, 0, 7),

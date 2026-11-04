@@ -26,16 +26,16 @@ Démo avant-vente Clever Cloud : Symfony 7.4 sur le **runtime FrankenPHP** (type
 |---|---|---|
 | `APP_ENV` | `prod` (`.env`) | Pastille du panneau processus (dégradé si `prod`/`production`). `production` ou inconnue → kernel `prod` sans debug (`src/Kernel.php`) ; `dev` sans paquets de dev → `prod` |
 | `ANNOUNCEMENT` | vide | Bandeau sur toutes les pages, y compris erreurs |
-| `LATENCY_BUDGET_MS` | `10` (1–10 000) | Ligne de budget de la rafale, barres rouges au-delà, « Sous N ms » |
+| `LATENCY_BUDGET_MS` | `10` (1–10 000) | Ligne de budget de la gerbe, étincelles rouges creuses au-delà, « Sous N ms » |
 | `BURST_SIZE` | `40` (5–200) | Taille de la rafale |
 
 Lues par `src/Demo/DemoSettings.php` (environnement du processus d'abord, puis `$_SERVER`/`$_ENV`), exposées à Twig en global `demo`. Valeur invalide → défaut.
 
 Scénario : changer `ANNOUNCEMENT` ou `LATENCY_BUDGET_MS`, `clever restart`, recharger. Option : `FRANKENPHP_LOOP_MAX=10` pour voir un worker se recycler pendant la rafale ; retirer `CC_FRANKENPHP_WORKER` pour le contraste « sans worker ».
 
-## Structure de page (accueil)
+## Structure de page (accueil) — univers « la forge qui ne s'éteint jamais » (2026-11-04)
 
-topbar → bandeau `ANNOUNCEMENT` → premier écran (« Requête n° N. », pastille du worker, boutons « Envoyer N requêtes » / « Se certifier ↓ », rafale au clic (échelle adaptative max(budget/4, p95×1,5), étiquette « budget N ms ↑ » si la ligne sort du cadre) + 4 statistiques ; à droite panneau processus : mode, PID, uptime, requêtes / recyclage, mémoire, variables, variables injectées) → `partials/cert.html.twig` (Academy, badge animé, une seule inclusion par page) → benchmark k6 (barres) → API lecture seule → déploiement → footer.
+topbar → bandeau `ANNOUNCEMENT` → premier écran en grille (`head` / `body` / `forge` / `pulse` / `proc`, une colonne sur mobile avec la forge juste sous le numéro) : « Requête n° N. » poinçonné en métal chaud (Archivo élargi), pastille du worker, boutons « Envoyer N requêtes » / « Se certifier » ; forge SVG (`partials/forge.svg.twig`, 12 braises allumées selon le vrai compteur : seuils 1, 2, 4… 2048, `--heat` pilote flammes et lueur) ; « La gerbe » au clic (une étincelle par réponse, échelle adaptative max(budget/4, p95×1,5), petite flamme sous la ligne quand `request === 1`, marteau qui frappe et étincelles de la couleur du worker, rien en `prefers-reduced-motion`) + 4 statistiques (« Fours rallumés » = redémarrages de Symfony) ; plaque « Le feu qui vous répond » (mode, PID, uptime, requêtes / recyclage, mémoire) → plaques « Réglages de la forge » (4 variables de démo) et « Running on Clever Cloud » (`CC_APP_NAME`, `APP_ID`, `INSTANCE_NUMBER` + `CC_PRETTY_INSTANCE_NAME`, `INSTANCE_TYPE`, `CC_COMMIT_ID` court, `CC_DEPLOYMENT_ID`, « Local » hors plateforme) → `partials/cert.html.twig` (le poinçon du maître : badge enfoncé dans la fonte, une seule inclusion par page) → benchmark k6 (barres de fer, seule celle du worker est chaude) → présentoir API (7 pièces forgées sur un râtelier, liens `/api/monsters/{id}`) → déploiement → footer. Page 404 : « Retour à la forge ».
 
 ## Fichiers clés
 
@@ -48,11 +48,13 @@ src/EventSubscriber/SecurityHeadersSubscriber.php
 src/Controller/MainController.php      /, /worker, /health, /benchmark/{name}
 src/Entity/Monster.php                 ApiResource Get + GetCollection
 migrations/                            schéma SQLite + 7 monstres
-templates/homepage/index.html.twig     accueil + JS de la rafale
+templates/homepage/index.html.twig     accueil (JS dans public/demo.js)
+templates/partials/forge.svg.twig      la forge dessinée, braises pilotées par le compteur
 templates/partials/cert.html.twig      bloc certification
 templates/bundles/TwigBundle/Exception/error.html.twig
 public/cc-brand.css                    kit partagé : NE PAS MODIFIER
-public/demo.css                        styles propres (préfixe fp-)
+public/demo.css                        styles propres (préfixe fp-), re-teinte les jetons du kit (suie)
+public/demo.js                         rafale, gerbe, marteau, étincelles, braises
 scripts/smoke.sh                       13 vérifications de routes : ./scripts/smoke.sh [URL]
 ```
 

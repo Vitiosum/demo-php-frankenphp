@@ -1,0 +1,113 @@
+{#
+  La forge du premier écran, dessinée en SVG.
+  Les 12 braises suivent le vrai compteur du worker : une de plus à chaque doublement
+  (1, 2, 4, … 2048 requêtes). La taille des flammes et la lueur en découlent (--heat).
+  Une seule inclusion par page (les id des dégradés).
+#}
+<svg class="fp-forge__svg" viewBox="0 0 520 380" role="img" aria-labelledby="forge-title">
+  <title id="forge-title">{{ isWorker
+    ? 'Forge allumée : ' ~ lit ~ ' braises sur 12 pour ' ~ w.request ~ ' requêtes servies par le même worker'
+    : 'Forge rallumée pour cette seule requête : une braise sur 12' }}</title>
+  <defs>
+    <linearGradient id="fgSteel" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#5d636c"/><stop offset="0.35" stop-color="#3a3e45"/><stop offset="1" stop-color="#1f2125"/>
+    </linearGradient>
+    <linearGradient id="fgWarmSide" x1="0" y1="0" x2="1" y2="0">
+      <stop offset="0.55" stop-color="#f57461" stop-opacity="0"/><stop offset="1" stop-color="#f57461" stop-opacity="0.38"/>
+    </linearGradient>
+    <linearGradient id="fgHot" x1="0" y1="0" x2="1" y2="0">
+      <stop offset="0" stop-color="#a51050"/><stop offset="0.16" stop-color="#f57461"/><stop offset="0.42" stop-color="#ffd27a"/>
+      <stop offset="0.55" stop-color="#fff6dc"/><stop offset="0.72" stop-color="#ffd27a"/><stop offset="0.88" stop-color="#f57461"/><stop offset="1" stop-color="#a51050"/>
+    </linearGradient>
+    <radialGradient id="fgCoal" cx="0.45" cy="0.4" r="0.7">
+      <stop offset="0" stop-color="#fff1c2"/><stop offset="0.35" stop-color="#ffb347"/><stop offset="0.75" stop-color="#f57461"/><stop offset="1" stop-color="#a51050"/>
+    </radialGradient>
+    <radialGradient id="fgGlow" cx="0.5" cy="0.62" r="0.5">
+      <stop offset="0" stop-color="#ffb347" stop-opacity="0.9"/><stop offset="0.45" stop-color="#f57461" stop-opacity="0.45"/><stop offset="1" stop-color="#cb1c42" stop-opacity="0"/>
+    </radialGradient>
+    <radialGradient id="fgBrickLight" gradientUnits="userSpaceOnUse" cx="375" cy="250" r="170">
+      <stop offset="0" stop-color="#f57461" stop-opacity="0.42"/><stop offset="1" stop-color="#f57461" stop-opacity="0"/>
+    </radialGradient>
+    <radialGradient id="fgFloor" gradientUnits="userSpaceOnUse" cx="330" cy="372" r="250">
+      <stop offset="0" stop-color="#f57461" stop-opacity="0.28"/><stop offset="1" stop-color="#f57461" stop-opacity="0"/>
+    </radialGradient>
+    <linearGradient id="fgFlameOuter" x1="0" y1="1" x2="0" y2="0">
+      <stop offset="0" stop-color="#cb1c42"/><stop offset="1" stop-color="#a51050" stop-opacity="0.15"/>
+    </linearGradient>
+    <linearGradient id="fgFlameMid" x1="0" y1="1" x2="0" y2="0">
+      <stop offset="0" stop-color="#ffb347"/><stop offset="1" stop-color="#f57461" stop-opacity="0.5"/>
+    </linearGradient>
+    <linearGradient id="fgFlameCore" x1="0" y1="1" x2="0" y2="0">
+      <stop offset="0" stop-color="#fff6dc"/><stop offset="1" stop-color="#ffd27a"/>
+    </linearGradient>
+    <pattern id="fgBricks" width="44" height="22" patternUnits="userSpaceOnUse">
+      <rect width="44" height="22" fill="#3a2520"/>
+      <path d="M0 0.75H44M0 11.75H44M0.75 0V11M22.75 11V22" stroke="#211410" stroke-width="1.5"/>
+    </pattern>
+    <linearGradient id="fgFlue" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#2a201b" stop-opacity="0"/><stop offset="0.7" stop-color="#2a201b"/>
+    </linearGradient>
+    <filter id="fgBlur" x="-50%" y="-50%" width="200%" height="200%"><feGaussianBlur stdDeviation="5"/></filter>
+    <path id="fgCoalShape" d="M-10 -1 L-6 -8 L3 -10 L10 -4 L9 5 L1 9 L-8 6 Z"/>
+  </defs>
+
+  {# Sol éclairé par le feu #}
+  <ellipse cx="330" cy="372" rx="300" ry="30" fill="url(#fgFloor)" class="fp-forge__light"/>
+  <path d="M0 372 H520" stroke="rgba(255,228,205,0.14)" stroke-width="1.5"/>
+
+  {# Cheminée, hotte et foyer en briques #}
+  <rect x="348" y="-34" width="54" height="36" fill="url(#fgFlue)"/>
+  <path d="M322 0 H428 L492 110 H258 Z" fill="#2a201b"/>
+  <path d="M322 0 H428 L431 6 H319 Z" fill="#1d1613"/>
+  <rect x="250" y="110" width="250" height="12" rx="2" fill="#4b3b34"/>
+  <rect x="256" y="122" width="238" height="250" fill="url(#fgBricks)"/>
+  <rect x="256" y="122" width="238" height="250" fill="url(#fgBrickLight)" class="fp-forge__light"/>
+  <path d="M296 302 V220 A79 58 0 0 1 454 220 V302 Z" fill="#4b3b34"/>
+  <path d="M302 300 V221 A73 53 0 0 1 448 221 V300 Z" fill="#0f0a08"/>
+
+  {# Le feu #}
+  <ellipse class="fp-forge__glow" cx="375" cy="262" rx="86" ry="62" fill="url(#fgGlow)"/>
+  <g class="fp-forge__flames">
+    <path class="fp-flame fp-flame--outer" fill="url(#fgFlameOuter)" d="M327 292 C318 262 340 244 338 220 C352 232 358 214 354 190 C378 206 392 230 386 252 C396 244 400 230 398 216 C420 240 424 270 416 292 Z"/>
+    <path class="fp-flame fp-flame--mid" fill="url(#fgFlameMid)" d="M341 292 C336 268 352 254 352 234 C364 244 368 230 366 212 C384 228 392 250 386 266 C394 260 397 250 396 242 C410 260 410 278 404 292 Z"/>
+    <path class="fp-flame fp-flame--core" fill="url(#fgFlameCore)" d="M354 292 C352 274 362 264 364 248 C374 258 380 268 378 278 C384 274 388 266 388 260 C396 272 396 284 392 292 Z"/>
+  </g>
+
+  {# Les braises : seuils 1, 2, 4… 2048 requêtes, du centre vers les bords #}
+  {% set coals = [
+    {x: 375, y: 281, at: 2, r: -12}, {x: 349, y: 282, at: 16, r: 30}, {x: 401, y: 282, at: 32, r: 75},
+    {x: 323, y: 283, at: 256, r: 140}, {x: 427, y: 283, at: 512, r: 200},
+    {x: 378, y: 293, at: 1, r: 10}, {x: 356, y: 294, at: 4, r: 95}, {x: 400, y: 294, at: 8, r: 160},
+    {x: 334, y: 294, at: 64, r: 220}, {x: 422, y: 294, at: 128, r: 45}, {x: 312, y: 294, at: 1024, r: 260}, {x: 444, y: 294, at: 2048, r: 120},
+  ] %}
+  <g class="fp-forge__coals">
+    {% for c in coals %}
+    <use href="#fgCoalShape" class="fp-coal{{ w.request >= c.at ? ' is-lit' }}" data-at="{{ c.at }}" transform="translate({{ c.x }} {{ c.y }}) rotate({{ c.r }})"/>
+    {% endfor %}
+  </g>
+  <rect x="290" y="300" width="170" height="10" rx="2" fill="#5a4840"/>
+
+  {# Billot et enclume #}
+  <path d="M106 338 H206 V372 H106 Z" fill="#3b2a20"/>
+  <path d="M120 344 V370 M150 342 V372 M182 344 V368" stroke="#2b1e17" stroke-width="2"/>
+  <ellipse cx="156" cy="338" rx="50" ry="5" fill="#4d3829"/>
+  <path fill="url(#fgSteel)" d="M40 256 Q70 248 100 247 L214 247 Q220 247 220 253 L220 266 Q220 270 214 270 L198 271 Q186 276 182 292 L182 302 Q198 308 214 324 L218 338 L94 338 L98 324 Q114 308 130 302 L130 292 Q126 276 114 271 L100 271 Q72 268 40 256 Z"/>
+  <path fill="url(#fgWarmSide)" d="M40 256 Q70 248 100 247 L214 247 Q220 247 220 253 L220 266 Q220 270 214 270 L198 271 Q186 276 182 292 L182 302 Q198 308 214 324 L218 338 L94 338 L98 324 Q114 308 130 302 L130 292 Q126 276 114 271 L100 271 Q72 268 40 256 Z"/>
+  <path d="M60 252 Q80 248.5 100 248.5 L214 248.5" stroke="rgba(255,236,214,0.35)" stroke-width="1.5" fill="none"/>
+
+  {# La pièce sur l'enclume #}
+  <rect x="122" y="236" width="80" height="11" rx="3" fill="url(#fgHot)" filter="url(#fgBlur)" class="fp-forge__piece-glow"/>
+  <rect x="122" y="238" width="80" height="9" rx="3" fill="url(#fgHot)"/>
+
+  {# Le marteau : pivote autour de la poignée (248, 164) #}
+  <g transform="translate(248 164)">
+    <g class="fp-forge__hammer">
+      <path d="M0 0 L-80 32" stroke="#7a5636" stroke-width="6" stroke-linecap="round"/>
+      <path d="M0 0 L-80 32" stroke="#9a7148" stroke-width="2" stroke-linecap="round" transform="translate(-1 -2)"/>
+      <g transform="translate(-90 36) rotate(-21.8)">
+        <rect x="-10" y="-22" width="20" height="44" rx="2.5" fill="url(#fgSteel)"/>
+        <rect x="-10" y="-22" width="6" height="44" rx="2" fill="rgba(255,236,214,0.18)"/>
+      </g>
+    </g>
+  </g>
+</svg>

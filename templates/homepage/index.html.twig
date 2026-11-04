@@ -1,87 +1,133 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}FrankenPHP worker · Démo Clever Cloud{% endblock %}
+{% block title %}La forge FrankenPHP · Démo Clever Cloud{% endblock %}
 
 {% set isWorker = w.mode == 'worker' %}
 {% set na = 'injecté au déploiement' %}
+{# Braises allumées : une par doublement du nombre de requêtes servies par ce worker #}
+{% set lit = [1, 2, 4, 8, 16, 32, 64, 128, 256, 512, 1024, 2048]|filter(t => t <= w.request)|length %}
 
 {% block body %}
 <div class="cc-container">
 
-  {# ── Premier écran : le worker qui sert cette page ── #}
+  {# ── Premier écran : la forge, le worker qui sert cette page ── #}
   <section class="fp-stage{{ isWorker ? ' is-worker' : ' is-classic' }}" aria-labelledby="stage-title">
-    <div class="fp-stage__main cc-reveal" style="--i:0">
+
+    <div class="fp-stage__head">
       <h1 id="stage-title" class="fp-title">
-        Requête n°&nbsp;<span id="fp-count" class="fp-title__n">{{ w.request|number_format(0, ',', ' ') }}</span>.
+        <span class="fp-title__label">Requête n°&nbsp;</span><span id="fp-count" class="fp-title__n">{{ w.request|number_format(0, ',', ' ') }}</span><span class="fp-title__dot">.</span>
       </h1>
       <p class="fp-sub">
         {% if isWorker %}
           <span class="fp-chip" style="--wc: var(--w0)">worker {{ w.worker }}</span>
-          Même processus PHP depuis {{ w.uptime }} : Symfony est déjà en mémoire.
+          <span>Le feu brûle depuis {{ w.uptime }} : Symfony est resté en mémoire.</span>
         {% else %}
           <span class="fp-chip is-cold">sans worker</span>
-          Nouveau script PHP à chaque requête : Symfony redémarre de zéro.
+          <span>Four rallumé pour cette requête : Symfony a redémarré de zéro.</span>
         {% endif %}
       </p>
-      <p class="fp-lead">Symfony 7.4 sur le runtime FrankenPHP de Clever Cloud. Une variable, <span class="cc-kbd">CC_FRANKENPHP_WORKER</span>, garde l'application chargée entre les requêtes, sans Dockerfile.</p>
-      <div class="fp-cta">
-        <button class="cc-btn cc-btn--gradient" type="button" id="fp-fire">Envoyer {{ demo.burstSize }} requêtes</button>
-        <a class="cc-btn" href="#cert-title">Se certifier Clever Cloud ↓</a>
-      </div>
-
-      <figure class="fp-pulse" id="pulse" data-burst="{{ demo.burstSize }}" data-budget="{{ demo.latencyBudgetMs }}" data-page-worker="{{ w.worker }}" data-mode="{{ w.mode }}">
-        <figcaption class="fp-pulse__head">
-          <span>Rafale vers <code>/worker</code> · temps serveur par requête</span>
-          <span class="fp-pulse__budget">budget {{ demo.latencyBudgetMs }} ms</span>
-        </figcaption>
-        <div class="fp-pulse__plot" role="img" id="fp-plot" aria-label="Aucune rafale envoyée pour l'instant">
-          <i class="fp-pulse__line" id="fp-line" aria-hidden="true" hidden></i>
-          <span class="fp-pulse__up" id="fp-up" hidden>ligne de budget au-dessus ↑</span>
-          <p class="fp-pulse__empty" id="fp-empty">Aucune rafale envoyée.</p>
-          <div class="fp-pulse__bars" id="fp-bars"></div>
-        </div>
-        <dl class="fp-pulse__stats" id="fp-stats" aria-live="polite" aria-atomic="true">
-          <div><dt>Médiane</dt><dd data-k="median">—</dd></div>
-          <div><dt>Sous {{ demo.latencyBudgetMs }} ms</dt><dd data-k="under">—</dd></div>
-          <div><dt>Workers vus</dt><dd data-k="workers">—</dd></div>
-          <div><dt>Redémarrages de Symfony</dt><dd data-k="boots">—</dd></div>
-        </dl>
-        <div class="fp-pulse__legend" id="fp-legend"></div>
-      </figure>
     </div>
 
-    <aside class="fp-proc cc-reveal" style="--i:1" aria-label="Processus PHP et variables d'environnement">
-      <div class="fp-proc__bar"><i></i><i></i><i></i><span>{{ demo.platform.app ?? 'demo-php-frankenphp' }}</span><span class="fp-env{{ demo.isProduction ? ' is-production' }}">{{ demo.envName }}</span></div>
-      <dl class="fp-proc__rows">
+    <div class="fp-stage__body">
+      <p class="fp-lead">En PHP classique, on rallume le four pour chaque pièce. Sur le runtime FrankenPHP de Clever Cloud, une variable, <span class="cc-kbd">CC_FRANKENPHP_WORKER</span>, garde le feu allumé : Symfony 7.4 reste chargé et chaque requête est frappée sur la même enclume. Sans Dockerfile.</p>
+      <div class="fp-cta">
+        <button class="cc-btn cc-btn--gradient" type="button" id="fp-fire">Envoyer {{ demo.burstSize }} requêtes</button>
+        <a class="cc-btn" href="#cert-title">Se certifier Clever Cloud</a>
+      </div>
+    </div>
+
+    <figure class="fp-forge" id="forge" style="--heat: {{ (lit / 12)|round(3) }}">
+      <div class="fp-forge__art">
+        {% include 'partials/forge.svg.twig' %}
+        <div class="fp-forge__sparks" id="fp-sparks" aria-hidden="true"></div>
+      </div>
+      <figcaption class="fp-forge__caption">
+        Braises allumées : <b id="fp-lit">{{ lit }}</b> sur 12.
+        {{ isWorker ? 'Une de plus chaque fois que ce worker double son nombre de requêtes.' : 'Sans worker, chaque requête rallume un feu neuf.' }}
+      </figcaption>
+    </figure>
+
+    <figure class="fp-pulse" id="pulse" data-burst="{{ demo.burstSize }}" data-budget="{{ demo.latencyBudgetMs }}" data-page-worker="{{ w.worker }}" data-mode="{{ w.mode }}">
+      <figcaption class="fp-pulse__head">
+        <span>La gerbe : temps serveur de chaque requête envoyée à <code>/worker</code></span>
+        <span class="fp-pulse__budget">budget {{ demo.latencyBudgetMs }} ms</span>
+      </figcaption>
+      <div class="fp-pulse__plot" role="img" id="fp-plot" aria-label="Aucune rafale envoyée pour l'instant">
+        <i class="fp-pulse__line" id="fp-line" aria-hidden="true" hidden></i>
+        <span class="fp-pulse__up" id="fp-up" hidden>ligne de budget au-dessus</span>
+        <p class="fp-pulse__empty" id="fp-empty">Envoyez une rafale : chaque réponse jaillira ici comme une étincelle.</p>
+        <div class="fp-pulse__bars" id="fp-bars"></div>
+      </div>
+      <dl class="fp-pulse__stats" id="fp-stats" aria-live="polite" aria-atomic="true">
+        <div><dt>Médiane</dt><dd data-k="median">—</dd></div>
+        <div><dt>Sous {{ demo.latencyBudgetMs }} ms</dt><dd data-k="under">—</dd></div>
+        <div><dt>Workers vus</dt><dd data-k="workers">—</dd></div>
+        <div><dt>Fours rallumés <small>redémarrages de Symfony</small></dt><dd data-k="boots">—</dd></div>
+      </dl>
+      <p class="fp-pulse__key">Une étincelle par requête : hauteur = temps serveur, couleur = worker qui a répondu, <span class="fp-key-boot" aria-hidden="true"></span> sous la ligne = four rallumé.</p>
+      <div class="fp-pulse__legend" id="fp-legend"></div>
+    </figure>
+
+    <aside class="fp-plate fp-plate--proc" aria-labelledby="proc-title">
+      <div class="fp-plate__head">
+        <h2 id="proc-title">Le feu qui vous répond</h2>
+        <span class="fp-env{{ demo.isProduction ? ' is-production' }}" title="APP_ENV">{{ demo.envName }}</span>
+      </div>
+      <dl class="fp-plate__rows">
         <div><dt>Mode</dt><dd class="{{ isWorker ? 'is-ok' : 'is-cold' }}">{{ w.server }}</dd></div>
-        <div><dt>Worker · PID</dt><dd>{{ w.worker }} · {{ w.pid }}</dd></div>
-        <div><dt>En mémoire depuis</dt><dd id="fp-uptime">{{ w.uptime }}</dd></div>
+        <div><dt>Worker et PID</dt><dd>{{ w.worker }} / {{ w.pid }}</dd></div>
+        <div><dt>Allumé depuis</dt><dd id="fp-uptime">{{ w.uptime }}</dd></div>
         <div><dt>Requêtes servies</dt><dd><span id="fp-served">{{ w.request|number_format(0, ',', ' ') }}</span>{% if isWorker and w.loop_max > 0 %} / {{ w.loop_max }}{% endif %}</dd></div>
-        <div><dt>FRANKENPHP_LOOP_MAX</dt><dd>{{ w.loop_max > 0 ? w.loop_max ~ ' requêtes' : 'jamais recyclé' }}</dd></div>
+        <div><dt>FRANKENPHP_LOOP_MAX</dt><dd>{{ w.loop_max > 0 ? 'rallumé toutes les ' ~ w.loop_max : 'jamais rallumé' }}</dd></div>
         <div><dt>Mémoire PHP</dt><dd>{{ w.memory_mb|number_format(1, ',', ' ') }} Mo</dd></div>
         <div><dt>Cette page</dt><dd>{{ w.server_ms|number_format(1, ',', ' ') }} ms serveur</dd></div>
       </dl>
       {% if isWorker and w.loop_max > 0 %}
       <div class="fp-recycle" style="--p: {{ (w.request / w.loop_max * 100)|round(1) }}%">
         <span></span>
-        <small>Recyclé dans <b id="fp-recycle">{{ w.recycle_in }}</b> requêtes (FRANKENPHP_LOOP_MAX)</small>
+        <small>Four rallumé dans <b id="fp-recycle">{{ w.recycle_in }}</b> requêtes (FRANKENPHP_LOOP_MAX)</small>
       </div>
       {% elseif not isWorker %}
-      <p class="fp-cold-note">Sans worker, rien n'est gardé d'une requête à l'autre. Sur Clever Cloud, <code>CC_FRANKENPHP_WORKER=/public/index.php</code> active le mode worker.</p>
+      <p class="fp-cold-note">Sans worker, rien n'est gardé d'une requête à l'autre. Sur Clever Cloud, <code>CC_FRANKENPHP_WORKER=/public/index.php</code> garde le feu allumé.</p>
       {% endif %}
-      <ul class="fp-config" aria-label="Variables lues par l'application">
-        <li><span>APP_ENV</span><b>{{ demo.envName }}</b></li>
-        <li><span>LATENCY_BUDGET_MS</span><b>{{ demo.latencyBudgetMs }}</b></li>
-        <li><span>BURST_SIZE</span><b>{{ demo.burstSize }}</b></li>
-        <li><span>ANNOUNCEMENT</span>{% if demo.announcement is empty %}<b class="is-empty">non définie</b>{% else %}<b>définie</b>{% endif %}</li>
-      </ul>
-      <dl class="fp-proc__vars">
-        <div><dt>Instance</dt><dd class="{{ demo.platform.instance is null ? 'is-empty' }}" title="{{ demo.platform.instance ?? na }}">{{ demo.platform.instance ?? na }}</dd></div>
-        <div><dt>Type d'instance</dt><dd class="{{ demo.platform.type is null ? 'is-empty' }}" title="{{ demo.platform.type ?? na }}">{{ demo.platform.type ?? na }}</dd></div>
-        <div><dt>Commit déployé</dt><dd class="{{ demo.platform.commit is null ? 'is-empty' }}" title="{{ demo.platform.commit ?? na }}">{{ demo.platform.commit ?? na }}</dd></div>
-        <div><dt>Déploiement</dt><dd class="{{ demo.platform.deployment is null ? 'is-empty' }}" title="{{ demo.platform.deployment ?? na }}">{{ demo.platform.deployment ?? na }}</dd></div>
-      </dl>
     </aside>
+  </section>
+
+  {# ── Réglages de la démo et variables injectées par Clever Cloud ── #}
+  <section class="fp-tools" aria-label="Réglages et plateforme">
+    <div class="fp-plate">
+      <div class="fp-plate__head"><h2>Réglages de la forge</h2></div>
+      <ul class="fp-config" aria-label="Variables lues par l'application">
+        <li><span>APP_ENV</span><b>{{ demo.envName }}</b><small>pastille du panneau, kernel prod</small></li>
+        <li><span>LATENCY_BUDGET_MS</span><b>{{ demo.latencyBudgetMs }}</b><small>ligne de budget de la gerbe</small></li>
+        <li><span>BURST_SIZE</span><b>{{ demo.burstSize }}</b><small>requêtes par rafale</small></li>
+        <li><span>ANNOUNCEMENT</span>{% if demo.announcement is empty %}<b class="is-empty">non définie</b>{% else %}<b>définie</b>{% endif %}<small>bandeau en haut de page</small></li>
+      </ul>
+      <p class="fp-plate__foot"><code>clever env set LATENCY_BUDGET_MS 1</code> puis <code>clever restart</code> : la forge redémarre avec le nouveau réglage.</p>
+    </div>
+
+    <div class="fp-plate fp-plate--cc">
+      <div class="fp-plate__head">
+        <h2>Running on Clever Cloud</h2>
+        {% if demo.live %}
+          <span class="cc-pill cc-pill--live"><span class="cc-dot"></span>En ligne</span>
+        {% else %}
+          <span class="cc-pill cc-pill--muted"><span class="cc-dot cc-dot--muted"></span>Local</span>
+        {% endif %}
+      </div>
+      <dl class="fp-plate__vars">
+        {% for row in [
+          {k: 'CC_APP_NAME', v: demo.platform.app},
+          {k: 'APP_ID', v: demo.platform.id},
+          {k: 'INSTANCE_NUMBER', v: demo.platform.instance},
+          {k: 'INSTANCE_TYPE', v: demo.platform.type},
+          {k: 'CC_COMMIT_ID', v: demo.platform.commit},
+          {k: 'CC_DEPLOYMENT_ID', v: demo.platform.deployment},
+        ] %}
+        <div><dt>{{ row.k }}</dt><dd class="{{ row.v is null ? 'is-empty' }}" title="{{ row.v ?? na }}">{{ row.v ?? na }}</dd></div>
+        {% endfor %}
+      </dl>
+    </div>
   </section>
 
   {% include 'partials/cert.html.twig' %}
@@ -89,42 +135,39 @@
   {# ── Benchmark k6 committé dans benchmark/ ── #}
   <section class="fp-bench" id="bench" aria-labelledby="bench-title">
     <div class="fp-bench__intro">
-      <h2 id="bench-title" class="cc-section__title">Même page, trois façons de servir PHP.</h2>
-      <p>Latence p95 mesurée par k6 sur la page d'accueil, 100 utilisateurs virtuels, 3 000 requêtes, 0 échec. Mesures faites en local (<code>https://localhost</code>, HTTP/2) et committées dans <code>benchmark/</code> : elles comparent les modes d'exécution entre eux.</p>
+      <h2 id="bench-title" class="fp-h2">Même page, trois façons de servir PHP.</h2>
+      <p>Latence p95 mesurée par k6 sur la page d'accueil, 100 utilisateurs virtuels, 3 000 requêtes, 0 échec. Mesures faites en local (<code>https://localhost</code>, HTTP/2) et committées dans <code>benchmark/</code> : elles comparent les modes d'exécution entre eux. Plus la barre est courte, plus la page sort vite.</p>
     </div>
     {% set rows = [
-      {label: 'FrankenPHP classique', note: 'Symfony rebooté à chaque requête', p95: 22.44, avg: 12.72, med: 11.90, slug: 'no-worker'},
+      {label: 'FrankenPHP classique', note: 'four rallumé à chaque requête', p95: 22.44, avg: 12.72, med: 11.90, slug: 'no-worker'},
       {label: 'PHP-FPM', note: 'un processus FPM par requête', p95: 15.97, avg: 9.45, med: 9.28, slug: 'fpm'},
-      {label: 'FrankenPHP worker', note: 'kernel gardé en mémoire', p95: 6.66, avg: 2.53, med: 1.56, slug: 'worker'},
+      {label: 'FrankenPHP worker', note: 'feu entretenu, kernel gardé en mémoire', p95: 6.66, avg: 2.53, med: 1.56, slug: 'worker'},
     ] %}
     <ol class="fp-bench__rows">
       {% for r in rows %}
       <li class="{{ r.slug == 'worker' ? 'is-best' }}">
         <div class="fp-bench__label"><b>{{ r.label }}</b><span>{{ r.note }}</span></div>
         <div class="fp-bench__track" aria-hidden="true"><span style="--w: {{ (r.p95 / 22.44 * 100)|round(1) }}%"></span></div>
-        <div class="fp-bench__val"><b>{{ r.p95|number_format(2, ',', ' ') }} ms</b><span>moyenne {{ r.avg|number_format(2, ',', ' ') }} · médiane {{ r.med|number_format(2, ',', ' ') }}</span></div>
-        <div class="fp-bench__links"><a href="{{ path('benchmark_report', {name: 'summary-10-vus-' ~ r.slug}) }}">10 VUs ↗</a><a href="{{ path('benchmark_report', {name: 'summary-100-vus-' ~ r.slug}) }}">100 VUs ↗</a></div>
+        <div class="fp-bench__val"><b>{{ r.p95|number_format(2, ',', ' ') }} ms</b><span>moyenne {{ r.avg|number_format(2, ',', ' ') }}, médiane {{ r.med|number_format(2, ',', ' ') }}</span></div>
+        <div class="fp-bench__links"><a href="{{ path('benchmark_report', {name: 'summary-10-vus-' ~ r.slug}) }}">rapport 10 VUs</a><a href="{{ path('benchmark_report', {name: 'summary-100-vus-' ~ r.slug}) }}">rapport 100 VUs</a></div>
       </li>
       {% endfor %}
     </ol>
     <p class="fp-bench__take">En mode worker, le p95 est <b>2,4 fois</b> plus bas qu'avec PHP-FPM et <b>3,4 fois</b> plus bas que FrankenPHP sans worker.</p>
   </section>
 
-  {# ── API Platform, en lecture seule ── #}
-  <section class="fp-api" aria-labelledby="api-title">
-    <div>
-      <h2 id="api-title" class="cc-section__title">Une entité, une API en lecture seule.</h2>
-      <p>API Platform génère les routes, la documentation OpenAPI et la Swagger UI à partir de l'entité <span class="cc-kbd">Monster</span>. Démo publique : seules les lectures sont exposées, toute écriture répond <span class="cc-kbd">405</span>.</p>
-      <p class="fp-api__count"><b>{{ monsterCount }}</b> monstres lus dans SQLite, recréé à chaque démarrage par les migrations Doctrine.</p>
-      <ul class="fp-api__list">
-        {% for m in monsters %}<li><a href="/api/monsters/{{ m.id }}">{{ m.name }}</a></li>{% endfor %}
-      </ul>
-      <div class="fp-cta">
-        <a class="cc-btn cc-btn--gradient" href="/api">Ouvrir Swagger UI</a>
-        <a class="cc-btn" href="/api/monsters.jsonld">GET /api/monsters</a>
+  {# ── API Platform, en lecture seule : le présentoir ── #}
+  <section class="fp-shelf" aria-labelledby="api-title">
+    <div class="fp-shelf__top">
+      <div class="fp-shelf__intro">
+        <h2 id="api-title" class="fp-h2">Le présentoir : une entité, une API en lecture seule.</h2>
+        <p>API Platform génère les routes, la documentation OpenAPI et la Swagger UI à partir de l'entité <span class="cc-kbd">Monster</span>. Les <b>{{ monsterCount }}</b> monstres lus dans SQLite sont les pièces du présentoir : on les regarde, on n'y touche pas. Toute écriture répond <span class="cc-kbd">405</span>.</p>
+        <div class="fp-cta">
+          <a class="cc-btn cc-btn--gradient" href="/api">Ouvrir Swagger UI</a>
+          <a class="cc-btn" href="/api/monsters.jsonld">GET /api/monsters</a>
+        </div>
       </div>
-    </div>
-    <pre class="fp-code" aria-label="Extrait de src/Entity/Monster.php"><span class="c">// src/Entity/Monster.php</span>
+      <pre class="fp-code" aria-label="Extrait de src/Entity/Monster.php"><span class="c">// src/Entity/Monster.php</span>
 <span class="k">#[ORM\Entity]</span>
 <span class="k">#[ApiResource</span>(operations: [
     <span class="k">new</span> Get(), <span class="k">new</span> GetCollection(),
@@ -137,18 +180,40 @@
     <span class="k">#[ORM\Column</span>(type: Types::TEXT)<span class="k">]</span>
     <span class="k">public</span> ?string $name = <span class="k">null</span>;
 }</pre>
+    </div>
+
+    <svg class="fp-sprite" aria-hidden="true" focusable="false">
+      <symbol id="pc-0" viewBox="0 0 80 120"><path d="M24 108 C12 82 14 50 40 40 C66 50 68 82 56 108" fill="none" stroke="currentColor" stroke-width="12"/><g fill="#1b1512"><circle cx="21" cy="90" r="1.8"/><circle cx="19" cy="74" r="1.8"/><circle cx="59" cy="90" r="1.8"/><circle cx="61" cy="74" r="1.8"/></g></symbol>
+      <symbol id="pc-1" viewBox="0 0 80 120"><circle cx="40" cy="44" r="10" fill="none" stroke="currentColor" stroke-width="6"/><path d="M40 54 V108" stroke="currentColor" stroke-width="6"/><path d="M40 92 H56 V98 H40 Z M40 102 H52 V108 H40 Z" fill="currentColor"/></symbol>
+      <symbol id="pc-2" viewBox="0 0 80 120"><circle cx="40" cy="42" r="7" fill="none" stroke="currentColor" stroke-width="5"/><path d="M40 49 V86 C40 104 62 106 62 90 V84" fill="none" stroke="currentColor" stroke-width="7" stroke-linecap="round"/></symbol>
+      <symbol id="pc-3" viewBox="0 0 80 120"><circle cx="40" cy="40" r="5" fill="none" stroke="currentColor" stroke-width="4"/><rect x="35" y="45" width="10" height="24" rx="2" fill="currentColor"/><path d="M35 69 H47 C52 86 48 102 38 112 C35 98 35 84 35 69 Z" fill="currentColor"/></symbol>
+      <symbol id="pc-4" viewBox="0 0 80 120"><ellipse cx="40" cy="48" rx="9" ry="13" fill="none" stroke="currentColor" stroke-width="5"/><rect x="37" y="58" width="6" height="28" rx="3" fill="currentColor"/><ellipse cx="40" cy="96" rx="9" ry="13" fill="none" stroke="currentColor" stroke-width="5"/></symbol>
+      <symbol id="pc-5" viewBox="0 0 80 120"><circle cx="40" cy="38" r="4" fill="none" stroke="currentColor" stroke-width="3"/><rect x="27" y="42" width="26" height="9" rx="1.5" fill="currentColor"/><path d="M35 51 H45 L41.5 110 H38.5 Z" fill="currentColor"/></symbol>
+      <symbol id="pc-6" viewBox="0 0 80 120"><circle cx="40" cy="40" r="5" fill="none" stroke="currentColor" stroke-width="4"/><rect x="36" y="44" width="8" height="10" rx="2" fill="currentColor"/><circle cx="40" cy="78" r="21" fill="none" stroke="currentColor" stroke-width="7"/></symbol>
+    </svg>
+
+    <ul class="fp-shelf__rack">
+      {% for m in monsters %}
+      <li>
+        <a href="/api/monsters/{{ m.id }}">
+          <svg class="fp-piece" viewBox="0 0 80 120" aria-hidden="true" focusable="false"><path class="fp-piece__hook" d="M40 -6 V34"/><use href="#pc-{{ (m.id - 1) % 7 }}"/></svg>
+          <span class="fp-tag"><b>{{ m.name }}</b><code>/api/monsters/{{ m.id }}</code></span>
+        </a>
+      </li>
+      {% endfor %}
+    </ul>
   </section>
 
   {# ── Ce qui est posé sur l'application ── #}
   <section class="fp-deploy" aria-labelledby="deploy-title">
     <div>
-      <h2 id="deploy-title" class="cc-section__title">Runtime FrankenPHP, sans Dockerfile.</h2>
-      <p>Clever Cloud fournit le binaire FrankenPHP, lance <span class="cc-kbd">composer install --no-dev</span> à chaque push, joue les hooks puis démarre le worker. Le TLS et le domaine sont gérés devant l'app.</p>
-      <ul class="fp-deploy__steps">
+      <h2 id="deploy-title" class="fp-h2">Runtime FrankenPHP, sans Dockerfile.</h2>
+      <p>Clever Cloud fournit le binaire FrankenPHP, lance <span class="cc-kbd">composer install --no-dev</span> à chaque déploiement, joue les hooks puis allume le worker. Le TLS et le domaine sont gérés devant l'app.</p>
+      <ol class="fp-deploy__steps">
         <li><b>Build</b> : dépendances Composer, assets de la Swagger UI et cache Symfony préchauffé (<span class="cc-kbd">CC_POST_BUILD_HOOK</span>).</li>
         <li><b>Démarrage</b> : migrations Doctrine sur SQLite (<span class="cc-kbd">CC_PRE_RUN_HOOK</span>).</li>
         <li><b>Bascule</b> : <span class="cc-kbd">GET /health</span> doit répondre 200 avant de recevoir le trafic.</li>
-      </ul>
+      </ol>
     </div>
     <pre class="fp-code" aria-label="Variables posées sur l'application"><span class="c"># une seule fois</span>
 <span class="k">clever</span> env set CC_WEBROOT <span class="s">public</span>
@@ -157,12 +222,12 @@
 <span class="k">clever</span> env set CC_CACHE_DEPENDENCIES <span class="s">true</span>
 
 <span class="c"># ensuite, à chaque changement</span>
-<span class="k">git</span> push clever main</pre>
+<span class="k">clever</span> deploy</pre>
   </section>
 
 </div>
 {% endblock %}
 
 {% block javascripts %}
-<script src="{{ asset('demo.js') }}?v=2026-10-25" defer></script>
+<script src="{{ asset('demo.js') }}?v=2026-11-04" defer></script>
 {% endblock %}

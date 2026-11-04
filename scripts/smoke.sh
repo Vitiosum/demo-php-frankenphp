@@ -32,7 +32,7 @@ check POST /api/monsters                      405
 check DELETE /api/monsters/1                  405
 check GET  /benchmark/summary-100-vus-worker  200 'http_req_duration'
 check GET  /benchmark/../.env                 404
-check GET  /page-inexistante                  404 'Retour au worker'
+check GET  /page-inexistante                  404 'Retour à la forge'
 check GET  /cc-brand.css                      200 '--cc-bg'
 
 exit "$fail"
