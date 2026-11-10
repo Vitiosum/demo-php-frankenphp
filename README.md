@@ -8,7 +8,7 @@
 
 <img src="docs/screenshot-phone.png" alt="The same first screen on a phone, live on Clever Cloud, worker mode: Requête n° 219, the worker chip, 8 lit coals in the forge and sparks flying from the anvil during a burst" width="300">
 
-**Run it yourself.** A live copy runs at <https://app-ffbfc62b-67a8-4502-8ba4-6870b91041f0.cleverapps.io/> (redeployed on 2026-11-10 in worker mode; it may be stopped between demos). The steps in [Deploy on Clever Cloud](#deploy-on-clever-cloud) recreate it from scratch in about 5 minutes.
+**Run it yourself.** The hosted demo was taken down after the presales review (November 2026). The steps in [Deploy on Clever Cloud](#deploy-on-clever-cloud) recreate it from scratch in about 5 minutes.
 
 **Get certified.** This demo runs on Clever Cloud. To deploy your own apps the same way, get certified at the [Clever Cloud Academy](https://academy.clever.cloud/).
 
