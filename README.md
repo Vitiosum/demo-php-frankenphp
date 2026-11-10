@@ -2,13 +2,13 @@
 
 > In classic PHP, the furnace is relit for every piece; in worker mode, the fire never goes out. A Symfony 7.4 app on the **FrankenPHP runtime** of Clever Cloud, without a Dockerfile, in **worker mode**: one variable, `CC_FRANKENPHP_WORKER`, keeps the Symfony kernel in memory between requests instead of booting it for each one. The page is a blacksmith's forge drawn in SVG. "Requête n° 214." is stamped in hot metal: the real number of requests the PHP worker answering you has already served. The hearth lights one more coal each time that number doubles. A button fires 40 requests at `/worker`: the hammer strikes, one spark flies per response, and each one lands in a measured spark chart (server time, worker, Symfony restarts). Below: the Clever Cloud Academy hallmark, k6 measurements of the same page served three ways, drawn as iron bars, and a read-only API Platform API on SQLite whose monsters hang on the smith's display rack. No add-on.
 
-![Animated tour, run locally with php -S (classic mode, not worker mode): a click on "Envoyer 40 requêtes" fires two bursts at /worker, the hammer strikes the anvil, sparks fly, and the spark chart fills with one spark per response and a relit-furnace flame under each](docs/tour.gif)
+![Animated tour, live on Clever Cloud, worker mode: a click on "Envoyer 40 requêtes" fires two bursts at /worker, the hammer strikes the anvil, sparks fly in the colours of the two workers that answer, the spark chart fills with one spark per response (median 0.4 ms, 40 of 40 under budget, 0 Symfony restarts) and "Requête n°" climbs from 279 to 318 on the same worker](docs/tour.gif)
 
-![The forge run locally with php -S, so in classic mode, not worker mode: "Requête n° 1.", the "sans worker" chip, a single lit coal in the hearth, the hammer striking during a burst with sparks flying from the anvil, the spark chart of the 40 requests with a relit-furnace flame under each one (40 Symfony restarts), and the process plate](docs/screenshot-desktop.png)
+![The forge live on Clever Cloud, worker mode: "Requête n° 192.", the "worker d93527" chip, 8 lit coals out of 12 in the hearth, the hammer striking during a burst with sparks flying from the anvil in the colours of the two workers, the spark chart of the 40 requests (median 0.4 ms, 40 of 40 under budget, 2 workers seen, 0 Symfony restarts), and the process plate in "FrankenPHP · worker" mode](docs/screenshot-desktop.png)
 
-<img src="docs/screenshot-phone.png" alt="The same first screen on a phone, run locally with php -S (classic mode, not worker mode): the request number, the forge and sparks flying from the anvil during a burst" width="300">
+<img src="docs/screenshot-phone.png" alt="The same first screen on a phone, live on Clever Cloud, worker mode: Requête n° 219, the worker chip, 8 lit coals in the forge and sparks flying from the anvil during a burst" width="300">
 
-**Run it yourself.** The hosted demo was taken down after the presales review (November 2026). The steps in [Deploy on Clever Cloud](#deploy-on-clever-cloud) recreate it from scratch in about 5 minutes.
+**Run it yourself.** A live copy runs at <https://app-ffbfc62b-67a8-4502-8ba4-6870b91041f0.cleverapps.io/> (redeployed on 2026-11-10 in worker mode; it may be stopped between demos). The steps in [Deploy on Clever Cloud](#deploy-on-clever-cloud) recreate it from scratch in about 5 minutes.
 
 **Get certified.** This demo runs on Clever Cloud. To deploy your own apps the same way, get certified at the [Clever Cloud Academy](https://academy.clever.cloud/).
 
@@ -139,7 +139,7 @@ APP_ENV=production ANNOUNCEMENT="Test" LATENCY_BUDGET_MS=10 BURST_SIZE=40 php -S
 php bin/console lint:twig templates && php bin/console lint:container && composer audit
 ```
 
-Under `php -S`, **worker mode is not reproduced**: each request is a new script ("Requête n° 1.", "sans worker", a single coal, 40 relit furnaces in the burst), which is also the useful contrast. The screenshots above were taken that way. For worker mode locally: `frankenphp run` (the committed `Caddyfile`). Under `php -S`, `$_SERVER` does not contain the environment: Symfony keeps `APP_ENV` from `.env`, while the chip reads the real variable.
+Under `php -S`, **worker mode is not reproduced**: each request is a new script ("Requête n° 1.", "sans worker", a single coal, 40 relit furnaces in the burst), which is also the useful contrast. The screenshots and the animation above were taken on Clever Cloud, in worker mode. For worker mode locally: `frankenphp run` (the committed `Caddyfile`). Under `php -S`, `$_SERVER` does not contain the environment: Symfony keeps `APP_ENV` from `.env`, while the chip reads the real variable.
 
 ## Security
 
