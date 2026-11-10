@@ -28,7 +28,9 @@
   var colors = {}, order = [];
 
   function set(k, v) { stats.querySelector('[data-k="' + k + '"]').textContent = v; }
-  function color(id) { return 'var(--w' + (colors[id] % 6) + ')'; }
+  var classic = fig.dataset.mode !== 'worker';
+  // Sans worker, chaque requête est un script différent : une seule teinte froide, pas six couleurs qui ne désignent personne.
+  function color(id) { return classic ? 'var(--f-bleui)' : 'var(--w' + (colors[id] % 6) + ')'; }
 
   // Le marteau frappe et une étincelle part par réponse, dans la couleur du worker qui a répondu.
   function strike(list) {
@@ -44,7 +46,7 @@
           s.style.setProperty('--a', (-170 + Math.random() * 160).toFixed(1) + 'deg');
           s.style.setProperty('--d', (40 + Math.random() * 90).toFixed(0) + 'px');
           s.style.setProperty('--t', (0.45 + Math.random() * 0.4).toFixed(2) + 's');
-          s.style.setProperty('--wc', color(r.worker));
+          if (!classic) s.style.setProperty('--wc', color(r.worker));
           s.addEventListener('animationend', function () { this.remove(); });
           sparks.appendChild(s);
         }
